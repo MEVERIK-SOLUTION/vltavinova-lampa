@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+                <!DOCTYPE html>
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
@@ -297,7 +297,7 @@
         }
         
         .split-section.reverse {
-            grid-template-columns: 1fr 1fr; /* Na PC se prohodí flex-direction nebo grid area */
+            grid-template-columns: 1fr 1fr;
         }
 
         .split-text {
@@ -321,10 +321,12 @@
         .oracle-section {
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             padding: 6rem 20px; background: radial-gradient(circle at center, #0a0a0c 0%, var(--bg-deep) 100%);
+            position: relative;
         }
         .oracle-box {
             background: rgba(15, 15, 15, 0.6); padding: 4rem; border: 1px solid #222;
             max-width: 700px; width: 100%; text-align: center; backdrop-filter: blur(10px);
+            z-index: 2;
         }
         .oracle-textarea {
             width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--text-dark);
@@ -336,13 +338,24 @@
         .cursor { display: inline-block; width: 8px; height: 1.2em; background-color: var(--hope-gold); vertical-align: text-bottom; animation: blink 1s infinite; margin-left: 4px; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-        /* --- TLAČÍTKA --- */
+        /* --- TLAČÍTKA A FOOTER --- */
         .btn {
             background: transparent; color: var(--hope-gold); border: 1px solid var(--hope-gold);
             padding: 1rem 3rem; font-family: 'Inter', sans-serif; text-transform: uppercase;
             letter-spacing: 2px; font-size: 0.8rem; cursor: pointer; transition: all 0.4s ease; display: inline-block;
         }
         .btn:hover { background: var(--hope-gold); color: var(--bg-deep); box-shadow: 0 0 20px var(--hope-glow); }
+
+        footer {
+            text-align: center;
+            padding: 3rem 20px;
+            background-color: var(--bg-deep);
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            border-top: 1px solid #111;
+        }
+
+        footer p { margin-bottom: 0.5rem; }
 
         @media (max-width: 960px) {
             .split-section { grid-template-columns: 1fr; }
@@ -377,7 +390,8 @@
             <canvas id="stardust"></canvas>
             <div class="photo-container" style="position: absolute; top:0; left:0; width:100%; height:100%; z-index: 0; opacity: 0.5;">
                 <img src="uploaded:Vltavinova větev lampička/IMG_1215.jpg" alt="Svítící lahev ve tmě" class="dramatic-photo slideshow-image">
-                <img src="uploaded:Vltavinova větev lampička/IMG_1217.jpg" alt="Dřevo a temnota" class="dramatic-photo slideshow-image">
+                <img src="uploaded:Vltavinova větev lampička/IMG_1218.jpg" alt="Dřevo a temnota" class="dramatic-photo slideshow-image">
+                <img src="uploaded:Vltavinova větev lampička/IMG_1216.jpg" alt="Atmosféra" class="dramatic-photo slideshow-image">
                 <img src="uploaded:Vltavinova větev lampička/IMG_1214.jpg" alt="Detail světla" class="dramatic-photo slideshow-image">
             </div>
             <div class="hero-content reveal">
@@ -433,7 +447,7 @@
                 <h3 style="margin-bottom: 1rem; color: var(--hope-gold);">Hledání smyslu</h3>
                 <p>Když jsem se podíval na fakta bez filtrů, bylo to jasné. Systém chce symbiózu, ne izolaci. Chce procesy, které spolu mluví. Lidé plní zadání, ale málokdo ví, kam celý sektor směřuje a proč.</p>
                 <br>
-                <p>Potřeboval jsem ukotvení. Potřeboval jsem rukama vytvořit něco hmatatelného, co není jen dalším řádkem kódu nebo normou. Tak začal vznikat Vltavínový Strážce. Jako osobní terapie. Jako důkaz, že technika může mít přesah.</p>
+                <p>Potřeboval jsem ukotvení. Potřeboval jsem rukama vytvořit něco hmatatelného, co není jen dalším řádkem kódu nebo normou. Tak začal vznikat Vltavínový Strážce. Jako osobní terapie. Jako důkaz, že technika může mít přesah a že systémy mohou dýchat.</p>
             </div>
             <div class="split-image reveal reveal-delay-1">
                 <div class="photo-container">
@@ -447,13 +461,14 @@
     <main id="tvurci" class="page-section">
         <div class="section-title reveal">
             <div class="subtitle">Kapitola III.</div>
-            <h2>Tvorba s identitou</h2>
+            <h2>Duše ve hmotě</h2>
         </div>
 
         <div class="split-section">
             <div class="split-image reveal">
                 <div class="photo-container">
-                    <img src="uploaded:Vltavinova větev lampička/IMG_1224.HEIC" alt="Bára a Matěj" class="dramatic-photo portrait-photo">
+                    <!-- Použití JPEG verze vaší selfie pro garanci zobrazení v prohlížeči -->
+                    <img src="uploaded:image.png-a6b5a7a3-a7d5-4138-85ef-5b99e9e0b665" alt="Bára a Matěj" class="dramatic-photo portrait-photo">
                 </div>
             </div>
             <div class="split-text reveal reveal-delay-1">
@@ -470,7 +485,7 @@
     <!-- KAPITOLA 4: AI ORACLE (Poselství) -->
     <main id="oracle" class="page-section">
         <div class="oracle-section">
-            <img src="uploaded:Vltavinova větev lampička/IMG_1216.jpg" alt="Lesní tajemství" class="dramatic-photo" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity: 0.15; z-index: 0; pointer-events: none;">
+            <img src="uploaded:Vltavinova větev lampička/IMG_1217.jpg" alt="Zátiší" class="dramatic-photo" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity: 0.15; z-index: 0; pointer-events: none;">
             
             <div class="oracle-box reveal">
                 <h2>✨ Poselství Strážce ✨</h2>
@@ -522,6 +537,11 @@
             </form>
         </div>
     </main>
+
+    <footer>
+        <p>Zdrojové kódy webu: <strong>MEVERIK STUDIO®</strong></p>
+        <p>Artefakty, fotografie a texty jsou duševním vlastnictvím tvůrců (Matěj & Bára).</p>
+    </footer>
 
     <script>
         /* --- Navigační & Scroll Logika --- */
