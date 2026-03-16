@@ -39,6 +39,10 @@ Soubory a kódy jsou připraveny a přepsány tak, aby mohl být web okamžitě 
 
 Vzhledem k tomu, že se jedná o statickou SPA (Single Page Application), stačí tento repozitář jednoduše importovat do vašeho Vercel účtu. Vercel se postará o automatické nasazení (deployment) a projekt bude během několika vteřin dostupný online pod veřejnou doménou.
 
+web projektu na Vercel: https://vercel.com/meveriks-projects/vltavinovy-ztrazce
+doména webu: https://vltavinovy-ztrazce.vercel.app/
+Id projektu na Vercel: prj_qXGq5T7XQWDU6OVzJQckNguZG77u
+API klíč pro Vercel: vck_6TOugD0kSAWbMqhSQWl2wKkB4eM04Rg6r2QBorsZL55ujRE5WD1CPZD6 (po přečtení zneviditelnit)
 ## **📂 Struktura repozitáře**
 
 ```
