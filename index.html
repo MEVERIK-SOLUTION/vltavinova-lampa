@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Vltavínový strážce – ručně vyráběná lampička z větve a vltavínu. Jedinečný kus s hlubokým příběhem." />
+  <meta name="keywords" content="vltavín, lampička, ručně vyráběná, světlo, příběh, prodej" />
+  <meta property="og:title" content="Vltavínový strážce – lampička z větve a vltavínu" />
+  <meta property="og:description" content="Jedinečná ručně vyráběná lampička s hlubokým příběhem." />
+  <meta property="og:image" content="images/hero.jpg" />
+  <meta property="og:type" content="website" />
+  <title>Vltavínový strážce – lampička z větve a vltavínu</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════
+       HLAVIČKA / HERO SEKCE
+       Vyměňte src u <img> za cestu k vaší hero fotografii.
+  ════════════════════════════════════════════════════ -->
+  <header class="hero" id="top">
+    <div class="hero__overlay"></div>
+    <img
+      class="hero__bg"
+      src="images/hero.jpg"
+      alt="Vltavínový strážce – pohled zblízka"
+    />
+    <div class="hero__content">
+      <h1 class="hero__title">Vltavínový strážce</h1>
+      <p class="hero__subtitle">Lampička z větve a vltavínu</p>
+      <a href="#pribeh" class="btn btn--primary">Poznejte příběh</a>
+    </div>
+    <nav class="main-nav" aria-label="Hlavní navigace">
+      <ul>
+        <li><a href="#pribeh">Příběh</a></li>
+        <li><a href="#galerie">Galerie</a></li>
+        <li><a href="#detaily">Detaily</a></li>
+        <li><a href="#kontakt">Zájem o koupi</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ═══════════════════════════════════════════════
+         SEKCE: PŘÍBĚH
+         Upravte text v content/texts.md a pak ho vložte sem.
+    ════════════════════════════════════════════════════ -->
+    <section class="section section--story" id="pribeh">
+      <div class="container">
+        <div class="section__header">
+          <span class="section__label">Odkud přichází světlo</span>
+          <h2 class="section__title">Příběh lampičky</h2>
+        </div>
+        <div class="story__grid">
+          <div class="story__text">
+            <!-- OBSAH: Upravte v souboru content/texts.md (sekce: Příběh) -->
+            <p class="lead">
+              Každá lampička nese příběh. Tato začala v místech, kde Vltava
+              teče tiše a les vydává větve jako dary.
+            </p>
+            <p>
+              Větev si sama vybrala svůj tvar – stočená, zbroušená časem
+              a vodou. Vltavín, prastarý kámen meteoritického původu,
+              propůjčuje světlu svoji zelenou duši.
+            </p>
+            <p>
+              Nic nebylo vyrobeno ze série. Každý detail vznikal v rukou,
+              pomalu, s respektem k materiálu i k světlu, které má
+              jednoho dne nést.
+            </p>
+            <!-- /OBSAH -->
+          </div>
+          <div class="story__image">
+            <!-- Vyměňte src za cestu k fotografii příběhu / procesu výroby -->
+            <img
+              src="images/story.jpg"
+              alt="Výroba lampičky – ruce a materiál"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         SEKCE: GALERIE
+         Přidejte vlastní obrázky do složky images/
+         a aktualizujte src a alt atributy níže.
+    ════════════════════════════════════════════════════ -->
+    <section class="section section--gallery" id="galerie">
+      <div class="container">
+        <div class="section__header">
+          <span class="section__label">Pohledy na světlo</span>
+          <h2 class="section__title">Galerie</h2>
+        </div>
+        <div class="gallery__grid">
+          <!-- Obrázek 1 -->
+          <figure class="gallery__item gallery__item--large">
+            <img
+              src="images/gallery-1.jpg"
+              alt="Vltavínová lampička – celkový pohled"
+              loading="lazy"
+            />
+            <figcaption>Celkový pohled</figcaption>
+          </figure>
+          <!-- Obrázek 2 -->
+          <figure class="gallery__item">
+            <img
+              src="images/gallery-2.jpg"
+              alt="Detail vltavínu ve světle"
+              loading="lazy"
+            />
+            <figcaption>Detail vltavínu</figcaption>
+          </figure>
+          <!-- Obrázek 3 -->
+          <figure class="gallery__item">
+            <img
+              src="images/gallery-3.jpg"
+              alt="Větev – základna lampičky"
+              loading="lazy"
+            />
+            <figcaption>Přirozená základna</figcaption>
+          </figure>
+          <!-- Obrázek 4 -->
+          <figure class="gallery__item">
+            <img
+              src="images/gallery-4.jpg"
+              alt="Lampička rozsvícená v interiéru"
+              loading="lazy"
+            />
+            <figcaption>Ve světle domova</figcaption>
+          </figure>
+          <!-- Obrázek 5 -->
+          <figure class="gallery__item">
+            <img
+              src="images/gallery-5.jpg"
+              alt="Vltavínový strážce – detail kamene"
+              loading="lazy"
+            />
+            <figcaption>Kámen ze Země</figcaption>
+          </figure>
+          <!-- Přidejte další obrázky dle potřeby -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         SEKCE: DETAILY / O LAMPIČCE
+         Technické i poetické informace o dílu.
+    ════════════════════════════════════════════════════ -->
+    <section class="section section--details" id="detaily">
+      <div class="container">
+        <div class="section__header">
+          <span class="section__label">Co v sobě nese</span>
+          <h2 class="section__title">O tomto dílu</h2>
+        </div>
+        <div class="details__grid">
+          <div class="detail-card">
+            <span class="detail-card__icon">🌿</span>
+            <h3>Materiál</h3>
+            <!-- OBSAH: Upravte v souboru content/texts.md (sekce: Detaily – Materiál) -->
+            <p>Suchá větev z [doplňte lokalitu], vltavín, [doplňte kovové části, stínidlo atd.].</p>
+          </div>
+          <div class="detail-card">
+            <span class="detail-card__icon">💡</span>
+            <h3>Osvětlení</h3>
+            <!-- OBSAH: Upravte v souboru content/texts.md (sekce: Detaily – Osvětlení) -->
+            <p>Patice E14 / E27, kompatibilní s LED žárovkami. Příkon [doplňte W], napájení 230 V / 50 Hz.</p>
+          </div>
+          <div class="detail-card">
+            <span class="detail-card__icon">📐</span>
+            <h3>Rozměry</h3>
+            <!-- OBSAH: Upravte v souboru content/texts.md (sekce: Detaily – Rozměry) -->
+            <p>Výška: [doplňte] cm · Šířka: [doplňte] cm · Hmotnost: [doplňte] kg.</p>
+          </div>
+          <div class="detail-card">
+            <span class="detail-card__icon">🤲</span>
+            <h3>Ručně vyráběno</h3>
+            <!-- OBSAH: Upravte v souboru content/texts.md (sekce: Detaily – Výroba) -->
+            <p>Každý kus je originál. Žádné dva nejsou stejné. Vyrobeno s péčí v [doplňte místo].</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         SEKCE: CTA / ZÁJEM O KOUPI
+         Nenásilná výzva k akci – kontakt nebo formulář.
+    ════════════════════════════════════════════════════ -->
+    <section class="section section--cta" id="kontakt">
+      <div class="container">
+        <div class="cta__box">
+          <h2 class="cta__title">Lampička hledá domov</h2>
+          <!-- OBSAH: Upravte v souboru content/texts.md (sekce: CTA) -->
+          <p class="cta__text">
+            Pokud vás toto světlo oslovilo a chcete se dozvědět více –
+            nebo ho přijmout do svého domova – napište mi. Rád/a sdílím
+            příběh i cenu.
+          </p>
+          <!-- Upravte odkaz: mailto: nebo odkaz na kontaktní formulář -->
+          <a href="mailto:vas@email.cz" class="btn btn--primary">Napište mi</a>
+          <p class="cta__note">Nebo se ozvěte přes sociální sítě níže.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════════
+       PATIČKA
+  ════════════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer__inner">
+        <p class="footer__brand">Vltavínový strážce</p>
+        <p class="footer__copy">
+          <!-- OBSAH: Upravte rok a jméno v content/texts.md (sekce: Patička) -->
+          &copy; <span id="year"></span> [Vaše jméno / značka]. Vyrobeno s láskou.
+        </p>
+        <ul class="footer__links">
+          <!-- TODO: Doplňte skutečné URL před zveřejněním webu -->
+          <li><a href="https://instagram.com/" aria-label="Instagram">Instagram</a></li>
+          <li><a href="https://facebook.com/" aria-label="Facebook">Facebook</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Lightbox overlay pro galerii -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Zvětšený obrázek" hidden>
+    <button class="lightbox__close" id="lightboxClose" aria-label="Zavřít">&times;</button>
+    <img class="lightbox__img" id="lightboxImg" src="" alt="" />
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
