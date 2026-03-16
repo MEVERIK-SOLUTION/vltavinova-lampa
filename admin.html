@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | Vltavínový Strážce</title>
+    <meta name="robots" content="noindex, nofollow">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap');
+
+        :root {
+            --bg-deep: #050505;
+            --bg-surface: #0a0a0b;
+            --bg-panel: #121212;
+            --bg-input: #1a1a1a;
+            --text-main: #e0e0e0;
+            --text-dim: #888888;
+            --text-dark: #444444;
+            --hope-gold: #cba135;
+            --hope-glow: rgba(203, 161, 53, 0.15);
+            --success: #4a7c59;
+            --error: #8c3a3a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* --- LOGIN --- */
+        .login-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .login-box {
+            background: var(--bg-surface);
+            border: 1px solid #222;
+            padding: 3rem;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .login-box h1 {
+            font-family: 'Playfair Display', serif;
+            color: var(--hope-gold);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-box p {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            margin-bottom: 2rem;
+        }
+
+        .login-box input[type="password"] {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid #333;
+            color: var(--text-main);
+            padding: 12px 16px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 1rem;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+
+        .login-box input[type="password"]:focus {
+            outline: none;
+            border-color: var(--hope-gold);
+        }
+
+        .login-error {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            min-height: 1.2em;
+        }
+
+        /* --- BUTTONS --- */
+        .btn {
+            background: transparent;
+            color: var(--hope-gold);
+            border: 1px solid var(--hope-gold);
+            padding: 0.8rem 2rem;
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--hope-gold);
+            color: var(--bg-deep);
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-save {
+            background: var(--hope-gold);
+            color: var(--bg-deep);
+            border: 1px solid var(--hope-gold);
+            padding: 0.8rem 2.5rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
+        .btn-save:hover {
+            background: #d4af37;
+            box-shadow: 0 0 20px var(--hope-glow);
+        }
+
+        .btn-logout {
+            background: transparent;
+            border: 1px solid var(--text-dark);
+            color: var(--text-dim);
+            padding: 0.5rem 1.5rem;
+            font-size: 0.7rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            border-color: var(--error);
+            color: #c55;
+        }
+
+        /* --- DASHBOARD --- */
+        .dashboard {
+            display: none;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #1a1a1a;
+            position: sticky;
+            top: 0;
+            background: var(--bg-deep);
+            z-index: 50;
+        }
+
+        .dash-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: var(--text-dim);
+        }
+
+        .dash-header h1 span {
+            color: var(--hope-gold);
+        }
+
+        .dash-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .dash-nav {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid #1a1a1a;
+            overflow-x: auto;
+            padding: 0 2rem;
+            background: var(--bg-surface);
+        }
+
+        .dash-nav button {
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            padding: 1rem 1.5rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .dash-nav button:hover {
+            color: var(--text-main);
+        }
+
+        .dash-nav button.active {
+            color: var(--hope-gold);
+            border-bottom-color: var(--hope-gold);
+        }
+
+        .section-panel {
+            display: none;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section-panel.active {
+            display: block;
+        }
+
+        .section-panel h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            margin-bottom: 2rem;
+            color: var(--hope-gold);
+            border-bottom: 1px solid #1a1a1a;
+            padding-bottom: 1rem;
+        }
+
+        /* --- FORM FIELDS --- */
+        .field-group {
+            margin-bottom: 2rem;
+        }
+
+        .field-group label {
+            display: block;
+            color: var(--text-dim);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .field-group input[type="text"],
+        .field-group textarea {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid #2a2a2a;
+            color: var(--text-main);
+            padding: 12px 16px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            transition: border-color 0.3s;
+        }
+
+        .field-group input[type="text"]:focus,
+        .field-group textarea:focus {
+            outline: none;
+            border-color: var(--hope-gold);
+        }
+
+        .field-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .field-group .hint {
+            font-size: 0.7rem;
+            color: var(--text-dark);
+            margin-top: 0.3rem;
+        }
+
+        .field-group .image-preview {
+            margin-top: 0.5rem;
+            max-width: 300px;
+            max-height: 200px;
+            border: 1px solid #222;
+            display: block;
+        }
+
+        .field-group .image-select {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+
+        .field-group select {
+            background: var(--bg-input);
+            border: 1px solid #2a2a2a;
+            color: var(--text-main);
+            padding: 8px 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+        }
+
+        .field-group select:focus {
+            outline: none;
+            border-color: var(--hope-gold);
+        }
+
+        .save-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            border-top: 1px solid #1a1a1a;
+            margin-top: 2rem;
+        }
+
+        .save-status {
+            font-size: 0.85rem;
+            min-height: 1.2em;
+        }
+
+        .save-status.success { color: var(--success); }
+        .save-status.error { color: var(--error); }
+        .save-status.loading { color: var(--text-dim); }
+
+        .kv-notice {
+            background: var(--bg-panel);
+            border: 1px solid #333;
+            border-left: 3px solid var(--hope-gold);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            color: var(--text-dim);
+        }
+
+        .kv-notice strong { color: var(--text-main); }
+        .kv-notice code {
+            background: var(--bg-input);
+            padding: 2px 6px;
+            font-size: 0.8rem;
+            color: var(--hope-gold);
+        }
+
+        @media (max-width: 768px) {
+            .dash-header { flex-direction: column; gap: 1rem; text-align: center; }
+            .section-panel { padding: 1.5rem; }
+            .field-group textarea { min-height: 80px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN SCREEN -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <h1>🔒 Administrace</h1>
+            <p>Vltavínový Strážce — správa obsahu</p>
+            <input type="password" id="passwordInput" placeholder="Zadejte heslo" autofocus>
+            <div class="login-error" id="loginError"></div>
+            <button class="btn" onclick="doLogin()" id="loginBtn">Přihlásit se</button>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="dashboard" id="dashboard">
+        <div class="dash-header">
+            <h1>Vltavínový Strážce — <span>Admin</span></h1>
+            <div class="dash-actions">
+                <a href="/" class="btn" style="text-decoration:none; font-size:0.7rem; padding:0.5rem 1rem;">← Zpět na web</a>
+                <button class="btn-logout" onclick="doLogout()">Odhlásit</button>
+            </div>
+        </div>
+
+        <div class="dash-nav" id="dashNav">
+            <button class="active" onclick="showSection('sec-hero', this)">Úvod (Hero)</button>
+            <button onclick="showSection('sec-puvod', this)">I. Původ</button>
+            <button onclick="showSection('sec-filozofie', this)">II. Filozofie</button>
+            <button onclick="showSection('sec-tvurci', this)">III. Tvůrci</button>
+            <button onclick="showSection('sec-oracle', this)">Orákulum</button>
+            <button onclick="showSection('sec-artefakt', this)">Artefakt</button>
+        </div>
+
+        <!-- KV Notice (shown when KV is not configured) -->
+        <div class="kv-notice" id="kvNotice" style="display:none; max-width:900px; margin:2rem auto;">
+            <strong>⚠️ Úložiště obsahu není nakonfigurováno.</strong><br>
+            Pro trvalé ukládání změn je potřeba vytvořit <strong>Vercel KV</strong> úložiště:<br>
+            1. Otevřete <a href="https://vercel.com/dashboard/stores" style="color:var(--hope-gold)">Vercel Dashboard → Storage</a><br>
+            2. Klikněte <strong>Create → KV</strong> (zdarma do 30K operací/měsíc)<br>
+            3. Propojte s projektem <code>vltavinovy-ztrazce</code><br>
+            4. Deploy znovu (env variables <code>KV_REST_API_URL</code> a <code>KV_REST_API_TOKEN</code> se nastaví automaticky)
+        </div>
+
+        <!-- HERO SECTION -->
+        <div class="section-panel active" id="sec-hero">
+            <h2>Úvod (Hero sekce)</h2>
+            <div class="field-group">
+                <label>Podnadpis (subtitle)</label>
+                <input type="text" id="edit-hero-subtitle" value="">
+            </div>
+            <div class="field-group">
+                <label>Hlavní titulek</label>
+                <input type="text" id="edit-hero-title" value="">
+                <div class="hint">Použijte &lt;br&gt; pro zalomení řádku</div>
+            </div>
+            <div class="field-group">
+                <label>Perex</label>
+                <input type="text" id="edit-hero-perex" value="">
+            </div>
+            <div class="field-group">
+                <label>Text CTA tlačítka</label>
+                <input type="text" id="edit-hero-cta" value="">
+            </div>
+            <div class="save-bar">
+                <span class="save-status" id="status-hero"></span>
+                <button class="btn-save" onclick="saveSection('hero')">Uložit sekci</button>
+            </div>
+        </div>
+
+        <!-- PŮVOD SECTION -->
+        <div class="section-panel" id="sec-puvod">
+            <h2>Kapitola I — Původ (Fyzický Náraz)</h2>
+            <div class="field-group">
+                <label>Název kapitoly</label>
+                <input type="text" id="edit-puvod-label" value="">
+            </div>
+            <div class="field-group">
+                <label>Titulek</label>
+                <input type="text" id="edit-puvod-title" value="">
+            </div>
+            <div class="field-group">
+                <label>Hlavní odstavec (drop-cap)</label>
+                <textarea id="edit-puvod-text1"></textarea>
+            </div>
+            <div class="field-group">
+                <label>Druhý odstavec</label>
+                <textarea id="edit-puvod-text2"></textarea>
+            </div>
+            <div class="field-group">
+                <label>Třetí odstavec (paradox vltavínu)</label>
+                <textarea id="edit-puvod-text3"></textarea>
+            </div>
+            <div class="field-group">
+                <label>Obrázek sekce</label>
+                <select id="edit-puvod-img" onchange="previewImage(this, 'preview-puvod-img')">
+                    <option value="">— vyberte obrázek —</option>
+                </select>
+                <img class="image-preview" id="preview-puvod-img" src="" alt="Náhled">
+            </div>
+            <div class="save-bar">
+                <span class="save-status" id="status-puvod"></span>
+                <button class="btn-save" onclick="saveSection('puvod')">Uložit sekci</button>
+            </div>
+        </div>
+
+        <!-- FILOZOFIE SECTION -->
+        <div class="section-panel" id="sec-filozofie">
+            <h2>Kapitola II — Filozofie (Fakta, která dýchají)</h2>
+            <div class="field-group">
+                <label>Název kapitoly</label>
+                <input type="text" id="edit-fil-label" value="">
+            </div>
+            <div class="field-group">
+                <label>Titulek</label>
+                <input type="text" id="edit-fil-title" value="">
+            </div>
+            <div class="field-group">
+                <label>Úvodní odstavec</label>
+                <textarea id="edit-fil-intro"></textarea>
+            </div>
+            <div class="field-group">
+                <label>Hlavní odstavec</label>
+                <textarea id="edit-fil-main"></textarea>
+            </div>
+            <div class="field-group">
+                <label>Citát</label>
+                <textarea id="edit-fil-quote" style="min-height:80px;"></textarea>
+            </div>
+            <div class="field-group">
+                <label>Odstavec o vyhoření</label>
+                <textarea id="edit-fil-burnout"></textarea>
+            </div>
+            <div class="field-group">
+                <label>Podnadpis (Hledání smyslu)</label>
+                <input type="text" id="edit-fil-search-title" value="">
+            </div>
+            <div class="field-group">
+                <label>Text — hledání smyslu (1. odstavec)</label>
+                <textarea id="edit-fil-search1"></textarea>
+            </div>
+            <div class="field-group">
+                <label>Text — hledání smyslu (2. odstavec)</label>
+                <textarea id="edit-fil-search2"></textarea>
+            </div>
+            <div class="field-group">
+                <label>Závěrečný odstavec</label>
+                <textarea id="edit-fil-conclusion"></textarea>
+            </div>
+            <div class="field-group">
+                <label>Obrázek sekce</label>
+                <select id="edit-fil-img" onchange="previewImage(this, 'preview-fil-img')">
+                    <option value="">— vyberte obrázek —</option>
+                </select>
+                <img class="image-preview" id="preview-fil-img" src="" alt="Náhled">
+            </div>
+            <div class="save-bar">
+                <span class="save-status" id="status-filozofie"></span>
+                <button class="btn-save" onclick="saveSection('filozofie')">Uložit sekci</button>
+            </div>
+        </div>
+
+        <!-- TVŮRCI SECTION -->
+        <div class="section-panel" id="sec-tvurci">
+            <h2>Kapitola III — Tvůrci (Duše ve hmotě)</h2>
+            <div class="field-group">
+                <label>Název kapitoly</label>
+                <input type="text" id="edit-tvurci-label" value="">
+            </div>
+            <div class="field-group">
+                <label>Titulek</label>
+                <input type="text" id="edit-tvurci-title" value="">
+            </div>
+            <div class="field-group">
+                <label>Podnadpis (Bára & Matěj)</label>
+                <input type="text" id="edit-tvurci-subtitle" value="">
+            </div>
+            <div class="field-group">
+                <label>Text — 1. odstavec</label>
+                <textarea id="edit-tvurci-text1"></textarea>
+            </div>
+            <div class="field-group">
+                <label>Text — 2. odstavec</label>
+                <textarea id="edit-tvurci-text2"></textarea>
+            </div>
+            <div class="field-group">
+                <label>Text — 3. odstavec (kurzíva)</label>
+                <textarea id="edit-tvurci-text3"></textarea>
+            </div>
+            <div class="field-group">
+                <label>Medailonek — Bára</label>
+                <textarea id="edit-tvurci-bara"></textarea>
+            </div>
+            <div class="field-group">
+                <label>Medailonek — Matěj</label>
+                <textarea id="edit-tvurci-matej"></textarea>
+            </div>
+            <div class="field-group">
+                <label>Obrázek tvůrců</label>
+                <select id="edit-tvurci-img" onchange="previewImage(this, 'preview-tvurci-img')">
+                    <option value="">— vyberte obrázek —</option>
+                </select>
+                <img class="image-preview" id="preview-tvurci-img" src="" alt="Náhled">
+            </div>
+            <div class="save-bar">
+                <span class="save-status" id="status-tvurci"></span>
+                <button class="btn-save" onclick="saveSection('tvurci')">Uložit sekci</button>
+            </div>
+        </div>
+
+        <!-- ORACLE SECTION -->
+        <div class="section-panel" id="sec-oracle">
+            <h2>Orákulum (Poselství Strážce)</h2>
+            <div class="field-group">
+                <label>Předmluva (mystická)</label>
+                <textarea id="edit-oracle-preface"></textarea>
+            </div>
+            <div class="field-group">
+                <label>Titulek boxu</label>
+                <input type="text" id="edit-oracle-title" value="">
+            </div>
+            <div class="field-group">
+                <label>Text boxu</label>
+                <textarea id="edit-oracle-text"></textarea>
+            </div>
+            <div class="field-group">
+                <label>Placeholder textového pole</label>
+                <input type="text" id="edit-oracle-placeholder" value="">
+            </div>
+            <div class="save-bar">
+                <span class="save-status" id="status-oracle"></span>
+                <button class="btn-save" onclick="saveSection('oracle')">Uložit sekci</button>
+            </div>
+        </div>
+
+        <!-- ARTEFAKT SECTION -->
+        <div class="section-panel" id="sec-artefakt">
+            <h2>Artefakt (Epilog)</h2>
+            <div class="field-group">
+                <label>Název kapitoly</label>
+                <input type="text" id="edit-art-label" value="">
+            </div>
+            <div class="field-group">
+                <label>Titulek</label>
+                <input type="text" id="edit-art-title" value="">
+            </div>
+            <div class="field-group">
+                <label>Úvodní odstavec</label>
+                <textarea id="edit-art-intro"></textarea>
+            </div>
+            <div class="field-group">
+                <label>Druhý odstavec</label>
+                <textarea id="edit-art-text2"></textarea>
+            </div>
+            <div class="field-group">
+                <label>Název produktu (nad formulářem)</label>
+                <input type="text" id="edit-art-product-name" value="">
+            </div>
+            <div class="field-group">
+                <label>Text pod názvem produktu</label>
+                <textarea id="edit-art-cta-text" style="min-height:80px;"></textarea>
+            </div>
+            <div class="save-bar">
+                <span class="save-status" id="status-artefakt"></span>
+                <button class="btn-save" onclick="saveSection('artefakt')">Uložit sekci</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var TOKEN_KEY = 'vltavin_admin_token';
+        var allContent = {};
+
+        // List of available images
+        var IMAGES = [
+            'images/Lampicka_cover_prodej.jpg',
+            'images/Les_vtlaviny_2_lampicka.jpg',
+            'images/Vltavinovi_strazce4.jpg',
+            'images/bara_vizualizace_web_vltavinovi_strazce.jpg',
+            'images/drtivy_dopad_vltaviny_meteorit_lampicka.jpg',
+            'images/lampicka_na_stole_tma.jpg',
+            'images/lampicka_tvorba_kancelar.jpg',
+            'images/mateJ_prace_lampicka.jpg',
+            'images/matej_bara_cover_lampicka.jpg',
+            'images/matej_bara_tvorba_lampicky2.jpg',
+            'images/pracovna_lampicka_hotovo.jpg',
+            'images/pracovna_zatisi2_lampicka.jpg',
+            'images/vizualizace_lampicka_les.jpg',
+            'images/vizualizace_matej_bara_tvori_lampicka.jpg',
+            'images/vizualize_web_lampicka.jpg',
+            'images/vltaviny_les_lampicka.jpg',
+            'images/zatisi_lampicka_kancelar.jpg'
+        ];
+
+        // Default content values (matching index.html hardcoded text)
+        var DEFAULTS = {
+            'hero-subtitle': 'Když technika získá duši.',
+            'hero-title': 'Pravda je boj.<br>Fakta dýchají.',
+            'hero-perex': 'Příběh dvou tvůrců, jednoho kosmického kamene a větve, která přežila řeku.',
+            'hero-cta': 'Vstoupit do příběhu',
+
+            'puvod-label': 'Kapitola I.',
+            'puvod-title': 'Fyzický Náraz',
+            'puvod-text1': 'Před 15 miliony let došlo k drtivému kosmickému nárazu. Meteorit o průměru přes kilometr narazil do oblasti dnešního jižního Německa s nepředstavitelnou energií. Z této obrovské destrukce, z tavení pozemských hornin a jejich vymrštění vysoko do atmosféry, se zrodil Vltavín. Zelený, sklovitý posel z vesmíru, nesoucí v sobě otisk dávné katastrofy i následného znovuzrození.',
+            'puvod-text2': 'Vltavín není obyčejný kámen. Je to ztuhlá energie nárazu. Zemité tělo Strážce tvoří prastará větev. Kus dřeva, který byl odtržen od svých kořenů, vláčen divokou řekou, obrušován časem a nakonec vyvržen na břeh. Obojí – kosmický kámen i říční dřevo – muselo projít destrukcí, aby získalo svou dnešní jedinečnou identitu. Tvoří surová fakta přírody, která nepotřebují obhajobu. Jen spojení.',
+            'puvod-text3': 'Vltavín je paradox. Zrodil se z absolutní destrukce, avšak jeho estetika je dokonale křehká. Zelená barva, průsvitnost, nepravidelné povrchové vrásky jako otisky prstů kosmického nárazu. Fascinuje od starověku — keltové ho považovali za dar bohů, středověcí alchymisté za „kámen světla". Dnes ho vědci klasifikují jako typ IV tektitu — nejstarší a nejhojnější rozptylové pole v Evropě.',
+            'puvod-img': 'images/drtivy_dopad_vltaviny_meteorit_lampicka.jpg',
+
+            'fil-label': 'Kapitola II.',
+            'fil-title': 'Fakta, která dýchají',
+            'fil-intro': 'Existuje okamžik, kdy přestanete slyšet vlastní myšlenky. Ne proto, že by ztichly, ale proto, že jsou nahrazeny hlukem systému. E-maily, normy, výkazy, deadlines, konflikty zainteresovaných stran. Technické obory mají jednu záludnou vlastnost: nabídnou vám iluzi kontroly skrze data, a pak vám ukáží, jak málo data stačí, když realita odmítá spolupracovat.',
+            'fil-main': 'Technické obory bývají popisovány jako svět čísel, norem a regulací. Projektování staveb, energetika, digitalizace, programování, rozpočty nebo dotace — to všechno stojí na analytice, matematice a přesných postupech. Jenže v praxi nepracujeme jen s fakty, ale i s jejich interpretacemi. Stavař pracuje ve 2D, energetik ve 3D, každý filtruje informace podle své „pravdy" — a výsledkem jsou konflikty, duplicity a nekonečné informační šumy. Fakta jsou jednoduchá. To, co je složité, je pravda.',
+            'fil-quote': '„Čísla jsou jazyk. Ale systémy dýchají emocemi. A když zapomeneme na emoce, systémy přestanou dýchat úplně."',
+            'fil-burnout': 'Po letech v tomto oboru jsem narazil na hranici. Neustálé střety „pravd", byrokracie, roztříštěné procesy a tlak na výkon mě dovedly až k vyhoření. Sedm měsíců urputné práce v izolaci, pět měsíců těžkého boje s depresí. Ocitl jsem se v pološeru. A pak přišlo jediné možné rozhodnutí: stop.',
+            'fil-search-title': 'Hledání smyslu',
+            'fil-search1': 'Když jsem se podíval na fakta bez filtrů, bylo to jasné. Systém chce symbiózu, ne izolaci. Chce procesy, které spolu mluví. Lidé plní zadání, ale málokdo ví, kam celý sektor směřuje a proč.',
+            'fil-search2': 'Potřeboval jsem ukotvení. Potřeboval jsem rukama vytvořit něco hmatatelného, co není jen dalším řádkem kódu nebo normou. Tak začal vznikat Vltavínový Strážce. Jako osobní terapie. Jako důkaz, že technika může mít přesah a že systémy mohou dýchat.',
+            'fil-conclusion': 'Vltavínový Strážce nevznikl jako umělecký projekt. Vznikl jako záchranná brzda. Jako rozhodnutí vrátit ruce na věc, která drží tvar. Jako důkaz, že smysl není v systému — je v momentu, kdy systém vytvoříte svýma rukama.',
+            'fil-img': 'images/mateJ_prace_lampicka.jpg',
+
+            'tvurci-label': 'Kapitola III.',
+            'tvurci-title': 'Duše ve hmotě',
+            'tvurci-subtitle': 'Bára & Matěj',
+            'tvurci-text1': 'Aby technika mohla dýchat, potřebuje duši. A tu do projektu vnesla umělkyně Bára. Zatímco technický pohled vidí v kusu naplaveného dřeva jen mrtvou hmotu, umělecká vize v něm vidí schránku. Bára dokázala v chaosu přírodních tvarů najít směr a vytvořit prostor pro světlo.',
+            'tvurci-text2': 'Vltavínový Strážce je dokonalou fúzí. Umělkyně <strong>Bára</strong> do projektu vnesla čistou kreativní myšlenku a neuchopitelnou sochařskou duši. Já, <strong>Matěj</strong>, jsem dodal technický řád, zapojení, čas a strukturu. Spojili jsme umění a techniku do jednoho pulzujícího celku. Zasadili jsme vesmírné Vltavíny do skla a prastarého dřeva a skryli technologii do konopného provazu tak, aby nenarušila magii světla.',
+            'tvurci-text3': 'Dnes stavím systémy, které dýchají. Protože když technika získá duši, začne konečně sloužit tomu, k čemu byla stvořena — životu.',
+            'tvurci-bara': 'Není umělkyně v klasickém smyslu. Nevystavuje v galeriích, neprodává díla. Tvoří, protože přemýšlení beze tvorby pro ni není přemýšlení. Její přínos k Strážci byl nekontrolovatelný: přišla, podívala se na hromadu starého dřeva a kamenů a řekla „tady." Ne kde. Jak. Kde přesně světlo musí vycházet, aby prostor ožil.',
+            'tvurci-matej': 'Pracoval sedm měsíců v uzavřeném systému, který přestal produkovat smysl. Pět měsíců ho to stálo. A pak vzal vrtačku, pájku a kus větve. Systémy, které projektoval léta v digitálu, přeložil do analogového světa — a konečně pochopil, proč je důležité, aby měl každý systém tělo. Aby byl hmatatelný. Aby svítil.',
+            'tvurci-img': 'images/Vltavinovi_strazce4.jpg',
+
+            'oracle-preface': 'Existují věci, které přežily. Dřevo, které přežilo řeku. Kámen, který přežil pád z vesmíru. A světlo, které přežilo temnotu. Pokud procházíte svým vlastním nárazem — pracovním, osobním, existenciálním — Strážce naslouchá. Jeho moudrost není starobylá mágií. Je to moudrost hmoty, která prošla destrukcí a přežila.',
+            'oracle-title': '✨ Poselství Strážce ✨',
+            'oracle-text': 'Dřevo si pamatuje bolest zlomu. Vltavín si pamatuje žár pádu z nebes. Svěř Strážci svou současnou myšlenku, konflikt či obavu. Odpoví ti moudrostí hmoty, která přežila destrukci.',
+            'oracle-placeholder': 'Popište svůj náraz. Strážce odpovídá pravdou bez filtru.',
+
+            'art-label': 'Epilog',
+            'art-title': 'Získat Artefakt',
+            'art-intro': 'Tohle není dekorace. Je to zhmotnění příběhu o přežití, přerozeném smyslu a dokonalém spojení opačných světů. Každý kus série byl vyroben ručně — bez průmyslových nástrojů, bez formy, bez kopie. Každý Strážce existuje jednou.',
+            'art-text2': 'Je to světlo, které se rozsvítilo, když vše ostatní zhaslo. Je to připomínka, že i po nejtěžším nárazu může vzniknout něco nového, silného a krásného.',
+            'art-product-name': 'Lampa „Vltavínový Strážce"',
+            'art-cta-text': 'Pokud cítíte, že toto světlo má svítit ve vašem prostoru — napište nám. Neděláme velkoobchod. Děláme jeden příběh najednou.'
+        };
+
+        // --- SECTION FIELD MAPPING ---
+        var SECTION_FIELDS = {
+            'hero': ['hero-subtitle', 'hero-title', 'hero-perex', 'hero-cta'],
+            'puvod': ['puvod-label', 'puvod-title', 'puvod-text1', 'puvod-text2', 'puvod-text3', 'puvod-img'],
+            'filozofie': ['fil-label', 'fil-title', 'fil-intro', 'fil-main', 'fil-quote', 'fil-burnout', 'fil-search-title', 'fil-search1', 'fil-search2', 'fil-conclusion', 'fil-img'],
+            'tvurci': ['tvurci-label', 'tvurci-title', 'tvurci-subtitle', 'tvurci-text1', 'tvurci-text2', 'tvurci-text3', 'tvurci-bara', 'tvurci-matej', 'tvurci-img'],
+            'oracle': ['oracle-preface', 'oracle-title', 'oracle-text', 'oracle-placeholder'],
+            'artefakt': ['art-label', 'art-title', 'art-intro', 'art-text2', 'art-product-name', 'art-cta-text']
+        };
+
+        // --- INIT ---
+        document.addEventListener('DOMContentLoaded', function() {
+            populateImageSelects();
+            var token = sessionStorage.getItem(TOKEN_KEY);
+            if (token) {
+                verifyAndEnter(token);
+            }
+            document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') doLogin();
+            });
+        });
+
+        function populateImageSelects() {
+            var selects = document.querySelectorAll('select[id^="edit-"][id$="-img"]');
+            selects.forEach(function(sel) {
+                IMAGES.forEach(function(img) {
+                    var opt = document.createElement('option');
+                    opt.value = img;
+                    opt.textContent = img.replace('images/', '');
+                    sel.appendChild(opt);
+                });
+            });
+        }
+
+        function previewImage(selectEl, previewId) {
+            var preview = document.getElementById(previewId);
+            if (selectEl.value) {
+                preview.src = '/' + selectEl.value;
+                preview.style.display = 'block';
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+
+        // --- AUTH ---
+        function doLogin() {
+            var pwd = document.getElementById('passwordInput').value;
+            var errEl = document.getElementById('loginError');
+            var btn = document.getElementById('loginBtn');
+
+            if (!pwd) {
+                errEl.textContent = 'Zadejte heslo.';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Ověřuji...';
+            errEl.textContent = '';
+
+            fetch('/api/auth', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: pwd })
+            })
+            .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+            .then(function(result) {
+                btn.disabled = false;
+                btn.textContent = 'Přihlásit se';
+                if (!result.ok) {
+                    errEl.textContent = result.data.error || 'Přihlášení selhalo.';
+                    return;
+                }
+                sessionStorage.setItem(TOKEN_KEY, result.data.token);
+                enterDashboard();
+            })
+            .catch(function() {
+                btn.disabled = false;
+                btn.textContent = 'Přihlásit se';
+                errEl.textContent = 'Chyba připojení k serveru.';
+            });
+        }
+
+        function verifyAndEnter(token) {
+            fetch('/api/auth', {
+                method: 'GET',
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.valid) {
+                    enterDashboard();
+                } else {
+                    sessionStorage.removeItem(TOKEN_KEY);
+                }
+            })
+            .catch(function() {
+                sessionStorage.removeItem(TOKEN_KEY);
+            });
+        }
+
+        function enterDashboard() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboard').classList.add('active');
+            loadContent();
+        }
+
+        function doLogout() {
+            sessionStorage.removeItem(TOKEN_KEY);
+            location.reload();
+        }
+
+        // --- CONTENT ---
+        function loadContent() {
+            fetch('/api/content')
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.content) {
+                    allContent = data.content;
+                } else {
+                    allContent = {};
+                    // Show KV notice if content is null (KV not configured or empty)
+                }
+                populateForms();
+            })
+            .catch(function() {
+                allContent = {};
+                populateForms();
+                document.getElementById('kvNotice').style.display = 'block';
+            });
+        }
+
+        function populateForms() {
+            Object.keys(DEFAULTS).forEach(function(key) {
+                var value = allContent[key] || DEFAULTS[key];
+                var el = document.getElementById('edit-' + key);
+                if (!el) return;
+                if (el.tagName === 'SELECT') {
+                    el.value = value;
+                    // Trigger preview
+                    var previewId = 'preview-' + key;
+                    var preview = document.getElementById(previewId);
+                    if (preview && value) {
+                        preview.src = '/' + value;
+                        preview.style.display = 'block';
+                    }
+                } else if (el.tagName === 'TEXTAREA') {
+                    el.value = value;
+                } else {
+                    el.value = value;
+                }
+            });
+        }
+
+        function saveSection(section) {
+            var statusEl = document.getElementById('status-' + section);
+            var token = sessionStorage.getItem(TOKEN_KEY);
+            if (!token) {
+                statusEl.textContent = 'Nejste přihlášeni.';
+                statusEl.className = 'save-status error';
+                return;
+            }
+
+            // Gather fields for this section
+            var fields = SECTION_FIELDS[section];
+            if (!fields) return;
+
+            fields.forEach(function(key) {
+                var el = document.getElementById('edit-' + key);
+                if (el) {
+                    allContent[key] = el.value;
+                }
+            });
+
+            statusEl.textContent = 'Ukládám...';
+            statusEl.className = 'save-status loading';
+
+            fetch('/api/content', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(allContent)
+            })
+            .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+            .then(function(result) {
+                if (result.ok) {
+                    statusEl.textContent = '✓ Uloženo';
+                    statusEl.className = 'save-status success';
+                } else {
+                    statusEl.textContent = result.data.error || 'Chyba při ukládání.';
+                    statusEl.className = 'save-status error';
+                }
+                setTimeout(function() { statusEl.textContent = ''; }, 4000);
+            })
+            .catch(function() {
+                statusEl.textContent = 'Chyba připojení.';
+                statusEl.className = 'save-status error';
+            });
+        }
+
+        // --- NAVIGATION ---
+        function showSection(sectionId, btn) {
+            document.querySelectorAll('.section-panel').forEach(function(p) { p.classList.remove('active'); });
+            document.querySelectorAll('.dash-nav button').forEach(function(b) { b.classList.remove('active'); });
+            document.getElementById(sectionId).classList.add('active');
+            btn.classList.add('active');
+        }
+    </script>
+</body>
+</html>

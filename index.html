@@ -551,6 +551,7 @@
             <a onclick="showPage('tvurci')" id="link-tvurci" title="Kapitola III — Tvůrci">Duše</a>
             <a onclick="showPage('oracle')" id="link-oracle" title="AI Oracle — Strážce naslouchá" style="color: var(--hope-gold);">✨ Poselství</a>
             <a onclick="showPage('artefakt')" id="link-artefakt" title="Epilog — Získat Strážce">Artefakt</a>
+            <a href="/admin.html" id="link-admin" title="Administrace" style="opacity: 0.3; font-size: 0.6rem;">🔒</a>
         </div>
     </nav>
 
@@ -565,10 +566,10 @@
                 <img src="images/vizualizace_lampicka_les.jpg" alt="Strážce v objetí přírody" class="dramatic-photo slideshow-image" loading="eager">
             </div>
             <div class="hero-content reveal">
-                <p class="subtitle">Když technika získá duši.</p>
-                <h1>Pravda je boj.<br>Fakta dýchají.</h1>
-                <p class="perex">Příběh dvou tvůrců, jednoho kosmického kamene a větve, která přežila řeku.</p>
-                <button onclick="showPage('puvod')" class="btn" style="margin-top: 2rem;">Vstoupit do příběhu</button>
+                <p class="subtitle" id="hero-subtitle">Když technika získá duši.</p>
+                <h1 id="hero-title">Pravda je boj.<br>Fakta dýchají.</h1>
+                <p class="perex" id="hero-perex">Příběh dvou tvůrců, jednoho kosmického kamene a větve, která přežila řeku.</p>
+                <button onclick="showPage('puvod')" class="btn" id="hero-cta" style="margin-top: 2rem;">Vstoupit do příběhu</button>
             </div>
         </header>
     </main>
@@ -576,17 +577,17 @@
     <!-- KAPITOLA 1: PŮVOD / NÁRAZ -->
     <main id="puvod" class="page-section">
         <div class="section-title reveal">
-            <div class="subtitle">Kapitola I.</div>
-            <h2>Fyzický Náraz</h2>
+            <div class="subtitle" id="puvod-label">Kapitola I.</div>
+            <h2 id="puvod-title">Fyzický Náraz</h2>
         </div>
         
         <div class="split-section">
             <div class="split-text reveal">
-                <p class="drop-cap">Před 15 miliony let došlo k drtivému kosmickému nárazu. Meteorit o průměru přes kilometr narazil do oblasti dnešního jižního Německa s nepředstavitelnou energií. Z této obrovské destrukce, z tavení pozemských hornin a jejich vymrštění vysoko do atmosféry, se zrodil Vltavín. Zelený, sklovitý posel z vesmíru, nesoucí v sobě otisk dávné katastrofy i následného znovuzrození.</p>
+                <p class="drop-cap" id="puvod-text1">Před 15 miliony let došlo k drtivému kosmickému nárazu. Meteorit o průměru přes kilometr narazil do oblasti dnešního jižního Německa s nepředstavitelnou energií. Z této obrovské destrukce, z tavení pozemských hornin a jejich vymrštění vysoko do atmosféry, se zrodil Vltavín. Zelený, sklovitý posel z vesmíru, nesoucí v sobě otisk dávné katastrofy i následného znovuzrození.</p>
                 <br>
-                <p>Vltavín není obyčejný kámen. Je to ztuhlá energie nárazu. Zemité tělo Strážce tvoří prastará větev. Kus dřeva, který byl odtržen od svých kořenů, vláčen divokou řekou, obrušován časem a nakonec vyvržen na břeh. Obojí – kosmický kámen i říční dřevo – muselo projít destrukcí, aby získalo svou dnešní jedinečnou identitu. Tvoří surová fakta přírody, která nepotřebují obhajobu. Jen spojení.</p>
+                <p id="puvod-text2">Vltavín není obyčejný kámen. Je to ztuhlá energie nárazu. Zemité tělo Strážce tvoří prastará větev. Kus dřeva, který byl odtržen od svých kořenů, vláčen divokou řekou, obrušován časem a nakonec vyvržen na břeh. Obojí – kosmický kámen i říční dřevo – muselo projít destrukcí, aby získalo svou dnešní jedinečnou identitu. Tvoří surová fakta přírody, která nepotřebují obhajobu. Jen spojení.</p>
                 <br>
-                <p>Vltavín je paradox. Zrodil se z absolutní destrukce, avšak jeho estetika je dokonale křehká. Zelená barva, průsvitnost, nepravidelné povrchové vrásky jako otisky prstů kosmického nárazu. Fascinuje od starověku — keltové ho považovali za dar bohů, středověcí alchymisté za „kámen světla". Dnes ho vědci klasifikují jako typ IV tektitu — nejstarší a nejhojnější rozptylové pole v Evropě.</p>
+                <p id="puvod-text3">Vltavín je paradox. Zrodil se z absolutní destrukce, avšak jeho estetika je dokonale křehká. Zelená barva, průsvitnost, nepravidelné povrchové vrásky jako otisky prstů kosmického nárazu. Fascinuje od starověku — keltové ho považovali za dar bohů, středověcí alchymisté za „kámen světla". Dnes ho vědci klasifikují jako typ IV tektitu — nejstarší a nejhojnější rozptylové pole v Evropě.</p>
 
                 <div class="factoid-card reveal reveal-delay-1">
                     <span>⚡ <strong>Rychlost nárazu meteoritu:</strong> ~50 000 km/h</span>
@@ -598,7 +599,7 @@
             </div>
             <div class="split-image reveal-right">
                 <div class="photo-container">
-                    <img src="images/drtivy_dopad_vltaviny_meteorit_lampicka.jpg" alt="Kosmický náraz a zrození vltavínu" class="dramatic-photo" loading="lazy" decoding="async">
+                    <img id="puvod-img" src="images/drtivy_dopad_vltaviny_meteorit_lampicka.jpg" alt="Kosmický náraz a zrození vltavínu" class="dramatic-photo" loading="lazy" decoding="async">
                 </div>
             </div>
         </div>
@@ -607,34 +608,34 @@
     <!-- KAPITOLA 2: FILOZOFIE / VYHOŘENÍ -->
     <main id="filozofie" class="page-section">
         <div class="section-title reveal">
-            <div class="subtitle">Kapitola II.</div>
-            <h2>Fakta, která dýchají</h2>
+            <div class="subtitle" id="fil-label">Kapitola II.</div>
+            <h2 id="fil-title">Fakta, která dýchají</h2>
         </div>
 
         <div class="story-container">
-            <p class="reveal">Existuje okamžik, kdy přestanete slyšet vlastní myšlenky. Ne proto, že by ztichly, ale proto, že jsou nahrazeny hlukem systému. E-maily, normy, výkazy, deadlines, konflikty zainteresovaných stran. Technické obory mají jednu záludnou vlastnost: nabídnou vám iluzi kontroly skrze data, a pak vám ukáží, jak málo data stačí, když realita odmítá spolupracovat.</p>
+            <p class="reveal" id="fil-intro">Existuje okamžik, kdy přestanete slyšet vlastní myšlenky. Ne proto, že by ztichly, ale proto, že jsou nahrazeny hlukem systému. E-maily, normy, výkazy, deadlines, konflikty zainteresovaných stran. Technické obory mají jednu záludnou vlastnost: nabídnou vám iluzi kontroly skrze data, a pak vám ukáží, jak málo data stačí, když realita odmítá spolupracovat.</p>
 
-            <p class="reveal">Technické obory bývají popisovány jako svět čísel, norem a regulací. Projektování staveb, energetika, digitalizace, programování, rozpočty nebo dotace — to všechno stojí na analytice, matematice a přesných postupech. Jenže v praxi nepracujeme jen s fakty, ale i s jejich interpretacemi. Stavař pracuje ve 2D, energetik ve 3D, každý filtruje informace podle své „pravdy" — a výsledkem jsou konflikty, duplicity a nekonečné informační šumy. Fakta jsou jednoduchá. To, co je složité, je pravda.</p>
+            <p class="reveal" id="fil-main">Technické obory bývají popisovány jako svět čísel, norem a regulací. Projektování staveb, energetika, digitalizace, programování, rozpočty nebo dotace — to všechno stojí na analytice, matematice a přesných postupech. Jenže v praxi nepracujeme jen s fakty, ale i s jejich interpretacemi. Stavař pracuje ve 2D, energetik ve 3D, každý filtruje informace podle své „pravdy" — a výsledkem jsou konflikty, duplicity a nekonečné informační šumy. Fakta jsou jednoduchá. To, co je složité, je pravda.</p>
 
-            <div class="quote-block reveal reveal-delay-1">
+            <div class="quote-block reveal reveal-delay-1" id="fil-quote">
                 „Čísla jsou jazyk. Ale systémy dýchají emocemi. A když zapomeneme na emoce, systémy přestanou dýchat úplně."
             </div>
 
-            <p class="reveal">Po letech v tomto oboru jsem narazil na hranici. Neustálé střety „pravd", byrokracie, roztříštěné procesy a tlak na výkon mě dovedly až k vyhoření. Sedm měsíců urputné práce v izolaci, pět měsíců těžkého boje s depresí. Ocitl jsem se v pološeru. A pak přišlo jediné možné rozhodnutí: stop.</p>
+            <p class="reveal" id="fil-burnout">Po letech v tomto oboru jsem narazil na hranici. Neustálé střety „pravd", byrokracie, roztříštěné procesy a tlak na výkon mě dovedly až k vyhoření. Sedm měsíců urputné práce v izolaci, pět měsíců těžkého boje s depresí. Ocitl jsem se v pološeru. A pak přišlo jediné možné rozhodnutí: stop.</p>
         </div>
 
         <div class="split-section reverse">
             <div class="split-text reveal">
-                <h3 style="margin-bottom: 1rem; color: var(--hope-gold);">Hledání smyslu</h3>
-                <p>Když jsem se podíval na fakta bez filtrů, bylo to jasné. Systém chce symbiózu, ne izolaci. Chce procesy, které spolu mluví. Lidé plní zadání, ale málokdo ví, kam celý sektor směřuje a proč.</p>
+                <h3 id="fil-search-title" style="margin-bottom: 1rem; color: var(--hope-gold);">Hledání smyslu</h3>
+                <p id="fil-search1">Když jsem se podíval na fakta bez filtrů, bylo to jasné. Systém chce symbiózu, ne izolaci. Chce procesy, které spolu mluví. Lidé plní zadání, ale málokdo ví, kam celý sektor směřuje a proč.</p>
                 <br>
-                <p>Potřeboval jsem ukotvení. Potřeboval jsem rukama vytvořit něco hmatatelného, co není jen dalším řádkem kódu nebo normou. Tak začal vznikat Vltavínový Strážce. Jako osobní terapie. Jako důkaz, že technika může mít přesah a že systémy mohou dýchat.</p>
+                <p id="fil-search2">Potřeboval jsem ukotvení. Potřeboval jsem rukama vytvořit něco hmatatelného, co není jen dalším řádkem kódu nebo normou. Tak začal vznikat Vltavínový Strážce. Jako osobní terapie. Jako důkaz, že technika může mít přesah a že systémy mohou dýchat.</p>
                 <br>
-                <p>Vltavínový Strážce nevznikl jako umělecký projekt. Vznikl jako záchranná brzda. Jako rozhodnutí vrátit ruce na věc, která drží tvar. Jako důkaz, že smysl není v systému — je v momentu, kdy systém vytvoříte svýma rukama.</p>
+                <p id="fil-conclusion">Vltavínový Strážce nevznikl jako umělecký projekt. Vznikl jako záchranná brzda. Jako rozhodnutí vrátit ruce na věc, která drží tvar. Jako důkaz, že smysl není v systému — je v momentu, kdy systém vytvoříte svýma rukama.</p>
             </div>
             <div class="split-image reveal-left">
                 <div class="photo-container">
-                    <img src="images/mateJ_prace_lampicka.jpg" alt="Matěj v pološeru u kódu — moment vyhoření" class="dramatic-photo" style="object-position: center top;" loading="lazy" decoding="async">
+                    <img id="fil-img" src="images/mateJ_prace_lampicka.jpg" alt="Matěj v pološeru u kódu — moment vyhoření" class="dramatic-photo" style="object-position: center top;" loading="lazy" decoding="async">
                 </div>
             </div>
         </div>
@@ -643,23 +644,23 @@
     <!-- KAPITOLA 3: TVŮRCI / ZROZENÍ -->
     <main id="tvurci" class="page-section">
         <div class="section-title reveal">
-            <div class="subtitle">Kapitola III.</div>
-            <h2>Duše ve hmotě</h2>
+            <div class="subtitle" id="tvurci-label">Kapitola III.</div>
+            <h2 id="tvurci-title">Duše ve hmotě</h2>
         </div>
 
         <div class="split-section">
             <div class="split-image reveal-left">
                 <div class="photo-container">
-                    <img src="images/Vltavinovi_strazce4.jpg" alt="Matěj a Bára — tvůrci Vltavínového Strážce" class="dramatic-photo portrait-photo" style="object-position: center 25%;" loading="lazy" decoding="async">
+                    <img id="tvurci-img" src="images/Vltavinovi_strazce4.jpg" alt="Matěj a Bára — tvůrci Vltavínového Strážce" class="dramatic-photo portrait-photo" style="object-position: center 25%;" loading="lazy" decoding="async">
                 </div>
             </div>
             <div class="split-text reveal reveal-delay-1">
-                <h3 style="margin-bottom: 1rem; color: var(--hope-gold);">Bára & Matěj</h3>
-                <p>Aby technika mohla dýchat, potřebuje duši. A tu do projektu vnesla umělkyně Bára. Zatímco technický pohled vidí v kusu naplaveného dřeva jen mrtvou hmotu, umělecká vize v něm vidí schránku. Bára dokázala v chaosu přírodních tvarů najít směr a vytvořit prostor pro světlo.</p>
+                <h3 id="tvurci-subtitle" style="margin-bottom: 1rem; color: var(--hope-gold);">Bára & Matěj</h3>
+                <p id="tvurci-text1">Aby technika mohla dýchat, potřebuje duši. A tu do projektu vnesla umělkyně Bára. Zatímco technický pohled vidí v kusu naplaveného dřeva jen mrtvou hmotu, umělecká vize v něm vidí schránku. Bára dokázala v chaosu přírodních tvarů najít směr a vytvořit prostor pro světlo.</p>
                 <br>
-                <p>Vltavínový Strážce je dokonalou fúzí. Umělkyně <strong>Bára</strong> do projektu vnesla čistou kreativní myšlenku a neuchopitelnou sochařskou duši. Já, <strong>Matěj</strong>, jsem dodal technický řád, zapojení, čas a strukturu. Spojili jsme umění a techniku do jednoho pulzujícího celku. Zasadili jsme vesmírné Vltavíny do skla a prastarého dřeva a skryli technologii do konopného provazu tak, aby nenarušila magii světla.</p>
+                <p id="tvurci-text2">Vltavínový Strážce je dokonalou fúzí. Umělkyně <strong>Bára</strong> do projektu vnesla čistou kreativní myšlenku a neuchopitelnou sochařskou duši. Já, <strong>Matěj</strong>, jsem dodal technický řád, zapojení, čas a strukturu. Spojili jsme umění a techniku do jednoho pulzujícího celku. Zasadili jsme vesmírné Vltavíny do skla a prastarého dřeva a skryli technologii do konopného provazu tak, aby nenarušila magii světla.</p>
                 <br>
-                <p style="font-style: italic; color: var(--text-dim);">Dnes stavím systémy, které dýchají. Protože když technika získá duši, začne konečně sloužit tomu, k čemu byla stvořena — životu.</p>
+                <p id="tvurci-text3" style="font-style: italic; color: var(--text-dim);">Dnes stavím systémy, které dýchají. Protože když technika získá duši, začne konečně sloužit tomu, k čemu byla stvořena — životu.</p>
             </div>
         </div>
 
@@ -667,11 +668,11 @@
         <div class="medailonky reveal">
             <div class="medailonek">
                 <h4>Bára</h4>
-                <p>Není umělkyně v klasickém smyslu. Nevystavuje v galeriích, neprodává díla. Tvoří, protože přemýšlení beze tvorby pro ni není přemýšlení. Její přínos k Strážci byl nekontrolovatelný: přišla, podívala se na hromadu starého dřeva a kamenů a řekla „tady." Ne kde. Jak. Kde přesně světlo musí vycházet, aby prostor ožil.</p>
+                <p id="tvurci-bara">Není umělkyně v klasickém smyslu. Nevystavuje v galeriích, neprodává díla. Tvoří, protože přemýšlení beze tvorby pro ni není přemýšlení. Její přínos k Strážci byl nekontrolovatelný: přišla, podívala se na hromadu starého dřeva a kamenů a řekla „tady." Ne kde. Jak. Kde přesně světlo musí vycházet, aby prostor ožil.</p>
             </div>
             <div class="medailonek">
                 <h4>Matěj</h4>
-                <p>Pracoval sedm měsíců v uzavřeném systému, který přestal produkovat smysl. Pět měsíců ho to stálo. A pak vzal vrtačku, pájku a kus větve. Systémy, které projektoval léta v digitálu, přeložil do analogového světa — a konečně pochopil, proč je důležité, aby měl každý systém tělo. Aby byl hmatatelný. Aby svítil.</p>
+                <p id="tvurci-matej">Pracoval sedm měsíců v uzavřeném systému, který přestal produkovat smysl. Pět měsíců ho to stálo. A pak vzal vrtačku, pájku a kus větve. Systémy, které projektoval léta v digitálu, přeložil do analogového světa — a konečně pochopil, proč je důležité, aby měl každý systém tělo. Aby byl hmatatelný. Aby svítil.</p>
             </div>
         </div>
 
@@ -701,12 +702,12 @@
             <img src="images/vltaviny_les_lampicka.jpg" alt="Mystická vltavínová krajina — Poselství Strážce" class="dramatic-photo" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity: 0.12; z-index: 0; pointer-events: none; filter: grayscale(60%) blur(2px);" loading="lazy" decoding="async">
             
             <div class="oracle-preface reveal">
-                <p>Existují věci, které přežily. Dřevo, které přežilo řeku. Kámen, který přežil pád z vesmíru. A světlo, které přežilo temnotu. Pokud procházíte svým vlastním nárazem — pracovním, osobním, existenciálním — Strážce naslouchá. Jeho moudrost není starobylá mágií. Je to moudrost hmoty, která prošla destrukcí a přežila.</p>
+                <p id="oracle-preface">Existují věci, které přežily. Dřevo, které přežilo řeku. Kámen, který přežil pád z vesmíru. A světlo, které přežilo temnotu. Pokud procházíte svým vlastním nárazem — pracovním, osobním, existenciálním — Strážce naslouchá. Jeho moudrost není starobylá mágií. Je to moudrost hmoty, která prošla destrukcí a přežila.</p>
             </div>
 
             <div class="oracle-box reveal">
-                <h2>✨ Poselství Strážce ✨</h2>
-                <p style="color: var(--text-dim); margin-bottom: 2.5rem; font-style: italic;">
+                <h2 id="oracle-title">✨ Poselství Strážce ✨</h2>
+                <p id="oracle-text" style="color: var(--text-dim); margin-bottom: 2.5rem; font-style: italic;">
                     Dřevo si pamatuje bolest zlomu. Vltavín si pamatuje žár pádu z nebes. Svěř Strážci svou současnou myšlenku, konflikt či obavu. Odpoví ti moudrostí hmoty, která přežila destrukci.
                 </p>
                 
@@ -724,19 +725,19 @@
     <!-- KAPITOLA 5: ARTEFAKT -->
     <main id="artefakt" class="page-section">
         <div class="section-title reveal">
-            <div class="subtitle">Epilog</div>
-            <h2>Získat Artefakt</h2>
+            <div class="subtitle" id="art-label">Epilog</div>
+            <h2 id="art-title">Získat Artefakt</h2>
         </div>
 
         <div class="story-container" style="text-align: center; padding-top: 0;">
-            <p class="reveal">Tohle není dekorace. Je to zhmotnění příběhu o přežití, přerozeném smyslu a dokonalém spojení opačných světů. Každý kus série byl vyroben ručně — bez průmyslových nástrojů, bez formy, bez kopie. Každý Strážce existuje jednou.</p>
+            <p class="reveal" id="art-intro">Tohle není dekorace. Je to zhmotnění příběhu o přežití, přerozeném smyslu a dokonalém spojení opačných světů. Každý kus série byl vyroben ručně — bez průmyslových nástrojů, bez formy, bez kopie. Každý Strážce existuje jednou.</p>
             <br>
-            <p class="reveal">Je to světlo, které se rozsvítilo, když vše ostatní zhaslo. Je to připomínka, že i po nejtěžším nárazu může vzniknout něco nového, silného a krásného.</p>
+            <p class="reveal" id="art-text2">Je to světlo, které se rozsvítilo, když vše ostatní zhaslo. Je to připomínka, že i po nejtěžším nárazu může vzniknout něco nového, silného a krásného.</p>
         </div>
 
         <!-- Produktový záběr -->
         <div style="text-align: center; margin-bottom: 3rem;" class="reveal-scale">
-            <img src="images/Lampicka_cover_prodej.jpg" alt="Vltavínový Strážce — Model 001 — Vesmír, změněný v umění" class="dramatic-photo" style="max-width: 400px; width: 100%; margin: 0 auto; display: block; border: 1px solid #1a1a1a;" loading="lazy" decoding="async">
+            <img src="images/Lampicka_cover_prodej.jpg" alt="Lampa Vltavínový Strážce — Vesmír, změněný v umění" class="dramatic-photo" style="max-width: 400px; width: 100%; margin: 0 auto; display: block; border: 1px solid #1a1a1a;" loading="lazy" decoding="async">
         </div>
 
         <!-- Specifikace -->
@@ -747,7 +748,7 @@
             <div><span class="spec-label">Kabel</span><span class="spec-value">1,8 m, konopný oplet</span></div>
             <div><span class="spec-label">Rozměry</span><span class="spec-value">~40 × 12 × 8 cm</span></div>
             <div><span class="spec-label">Váha</span><span class="spec-value">600–800 g</span></div>
-            <div><span class="spec-label">Série</span><span class="spec-value">Model 001 (max. 12 ks)</span></div>
+            <div><span class="spec-label">Série</span><span class="spec-value">Lampa „Vltavínový Strážce“ (max. 12 ks)</span></div>
             <div><span class="spec-label">Certifikace</span><span class="spec-value">Průvodní list + podpis</span></div>
         </div>
 
@@ -755,8 +756,8 @@
         <div style="max-width: 600px; margin: 3rem auto 0; background: var(--bg-surface); padding: 4rem; border: 1px solid #1a1a1a; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden;" class="reveal">
             <img src="images/pracovna_lampicka_hotovo.jpg" alt="Detail" class="dramatic-photo" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity: 0.08; z-index: 0; pointer-events: none; filter: grayscale(80%) blur(3px);" loading="lazy" decoding="async">
             
-            <h3 style="font-size: 2rem; color: var(--hope-gold); margin-bottom: 1rem; position: relative; z-index: 1;">Model 001</h3>
-            <p style="color: var(--text-dim); margin-bottom: 1rem; position: relative; z-index: 1; font-style: italic;">Pokud cítíte, že toto světlo má svítit ve vašem prostoru — napište nám. Neděláme velkoobchod. Děláme jeden příběh najednou.</p>
+            <h3 id="art-product-name" style="font-size: 2rem; color: var(--hope-gold); margin-bottom: 1rem; position: relative; z-index: 1;">Lampa „Vltavínový Strážce“</h3>
+            <p id="art-cta-text" style="color: var(--text-dim); margin-bottom: 1rem; position: relative; z-index: 1; font-style: italic;">Pokud cítíte, že toto světlo má svítit ve vašem prostoru — napište nám. Neděláme velkoobchod. Děláme jeden příběh najednou.</p>
             
             <form onsubmit="event.preventDefault(); alert('Zpráva doputovala k tvůrcům.');" style="position: relative; z-index: 1; text-align: left;">
                 <div style="margin-bottom: 1.5rem;">
@@ -871,26 +872,8 @@
         }
         initParticles(); animateParticles();
 
-        /* --- Gemini API Logika (Orákulum) --- */
-        var apiKey = "";
+        /* --- Orákulum (Server-Side Proxy) --- */
         var typeWriterTimeout;
-
-        function fetchWithBackoff(url, options, maxRetries) {
-            maxRetries = maxRetries || 5;
-            var delays = [1000, 2000, 4000, 8000, 16000];
-            var attempt = 0;
-            function tryFetch() {
-                return fetch(url, options).then(function(response) {
-                    if (!response.ok) throw new Error('API Error: ' + response.status);
-                    return response.json();
-                }).catch(function(err) {
-                    attempt++;
-                    if (attempt >= maxRetries) throw err;
-                    return new Promise(function(res) { setTimeout(res, delays[attempt - 1]); }).then(tryFetch);
-                });
-            }
-            return tryFetch();
-        }
 
         function typeWriter(text, element, i) {
             i = i || 0;
@@ -918,28 +901,19 @@
             loadingEl.style.display = 'block';
             inputEl.value = '';
 
-            var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=' + apiKey;
-            var payload = {
-                systemInstruction: {
-                    parts: [{
-                        text: "Jsi 'Vltavínový Strážce', prastarý duch dřeva vyvrženého vodou a vesmírného kamene, který spadl z hvězd. Jsi symbolem odolnosti, terapie, překonání vyhoření a nalezení identity. Uživatel ti svěří svou aktuální těžkou myšlenku nebo pocit zmaru. Poskytni metaforickou, poetickou odpověď (max 3 věty). Využívej metafory kořenů, vesmírného prachu, srážky pravdy a faktů a vnitřního jasu. Tón je klidný a dodávající hlubokou naději."
-                    }]
-                },
-                contents: [{ parts: [{ text: userThought }] }]
-            };
-
-            if (!apiKey) {
-                loadingEl.style.display = 'none';
-                typeWriter("Hvězdy nyní mlčí. I ticho je odpověď. Zkus to později.", responseTextEl);
-                return;
-            }
-
-            fetchWithBackoff(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+            fetch('/api/oracle', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: userThought })
+            })
+            .then(function(r) { return r.json(); })
             .then(function(data) {
-                var textResponse = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text;
                 loadingEl.style.display = 'none';
-                if(textResponse) typeWriter(textResponse, responseTextEl);
-                else throw new Error("Empty response");
+                if (data.response) {
+                    typeWriter(data.response, responseTextEl);
+                } else {
+                    typeWriter(data.error || "Strážce mlčí. Zkuste znovu.", responseTextEl);
+                }
             })
             .catch(function() {
                 loadingEl.style.display = 'none';
@@ -950,6 +924,35 @@
         document.getElementById('oracleInput').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') { e.preventDefault(); askOracle(); }
         });
+
+        /* --- Dynamické načítání obsahu z admin panelu --- */
+        function loadContent() {
+            fetch('/api/content')
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (!data || !data.content) return;
+                var c = data.content;
+                var fields = ['hero-subtitle','hero-title','hero-perex','hero-cta','puvod-label','puvod-title','puvod-text1','puvod-text2','puvod-text3','fil-label','fil-title','fil-intro','fil-main','fil-quote','fil-burnout','fil-search-title','fil-search1','fil-search2','fil-conclusion','tvurci-label','tvurci-title','tvurci-subtitle','tvurci-text1','tvurci-text2','tvurci-text3','tvurci-bara','tvurci-matej','oracle-preface','oracle-title','oracle-text','art-label','art-title','art-intro','art-text2','art-product-name','art-cta-text'];
+                fields.forEach(function(key) {
+                    if (c[key]) {
+                        var el = document.getElementById(key);
+                        if (el) el.innerHTML = c[key];
+                    }
+                });
+                ['puvod-img','fil-img','tvurci-img'].forEach(function(key) {
+                    if (c[key]) {
+                        var el = document.getElementById(key);
+                        if (el) el.src = c[key];
+                    }
+                });
+                if (c['oracle-placeholder']) {
+                    var oInput = document.getElementById('oracleInput');
+                    if (oInput) oInput.placeholder = c['oracle-placeholder'];
+                }
+            })
+            .catch(function() {});
+        }
+        document.addEventListener('DOMContentLoaded', loadContent);
     </script>
 </body>
 </html>
