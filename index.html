@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vltavínový Strážce | Fakta, která dýchají</title>
+    <meta name="description" content="Vltavínový Strážce — ručně vyrobený artefakt z kosmických vltavínů a prastarého naplaveného dřeva. Příběh dvou tvůrců, překonané krize a nalezené rovnováhy.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
+
+        :root {
+            --bg-deep: #050505;
+            --bg-surface: #0a0a0b;
+            --bg-panel: #121212;
+            
+            --text-main: #e0e0e0;
+            --text-dim: #888888;
+            --text-dark: #444444;
+            
+            --hope-gold: #cba135;
+            --hope-glow: rgba(203, 161, 53, 0.15);
+            --vltavin-green: #4a5d4e;
+
+            --nav-height: 80px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            line-height: 1.8;
+            overflow-x: hidden;
+            font-weight: 300;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            letter-spacing: 1px;
+            color: #ffffff;
+        }
+
+        /* --- DRAMATICKÉ ÚPRAVY FOTOGRAFIÍ --- */
+        .dramatic-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(40%) contrast(125%) brightness(60%) sepia(15%) hue-rotate(350deg);
+            transition: filter 1.5s ease, transform 5s ease;
+        }
+
+        .portrait-photo {
+            filter: grayscale(70%) contrast(130%) brightness(55%) sepia(10%);
+            object-position: center 25%; 
+        }
+
+        .dramatic-photo:hover, .portrait-photo:hover {
+            filter: grayscale(10%) contrast(110%) brightness(85%) sepia(0%);
+            transform: scale(1.03);
+            box-shadow: 0 0 40px rgba(203, 161, 53, 0.2);
+        }
+
+        .photo-container {
+            position: relative;
+            background: #000;
+            overflow: hidden;
+            border: 1px solid #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Navigace */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5%;
+            height: var(--nav-height);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            background: linear-gradient(to bottom, rgba(5,5,5,0.95) 0%, rgba(5,5,5,0) 100%);
+            transition: background-color 0.4s ease, backdrop-filter 0.4s ease;
+        }
+
+        nav.scrolled {
+            background: rgba(5, 5, 5, 0.85);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: color 0.5s ease;
+        }
+
+        .logo:hover {
+            color: var(--hope-gold);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .nav-links a.active, .nav-links a:hover {
+            color: var(--text-main);
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: var(--hope-gold);
+            box-shadow: 0 0 10px var(--hope-gold);
+        }
+
+        /* --- SCROLL REVEAL ANIMACE --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 { transition-delay: 0.2s; }
+        .reveal-delay-2 { transition-delay: 0.4s; }
+
+        .reveal-left { opacity: 0; transform: translateX(-80px); transition: all 1.2s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .reveal-right { opacity: 0; transform: translateX(80px); transition: all 1.2s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .reveal-scale { opacity: 0; transform: scale(0.95); transition: all 1.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .reveal-left.active, .reveal-right.active, .reveal-scale.active { opacity: 1; transform: translateX(0) scale(1); }
+
+        /* SPA Logika */
+        .page-section {
+            display: none;
+            animation: emergeFromDark 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            padding-top: var(--nav-height);
+            min-height: 100vh;
+            padding-bottom: 5rem;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        @keyframes emergeFromDark {
+            from { opacity: 0; filter: blur(10px) brightness(0.5); transform: scale(0.98) translateY(10px); }
+            to { opacity: 1; filter: blur(0) brightness(1); transform: scale(1) translateY(0); }
+        }
+
+        /* --- TYPOGRAFIE A TEXTOVÉ BLOKY --- */
+        .story-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 4rem 20px;
+        }
+
+        .drop-cap::first-letter {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem;
+            float: left;
+            line-height: 0.8;
+            padding-right: 15px;
+            padding-top: 5px;
+            color: var(--hope-gold);
+        }
+
+        .quote-block {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            color: var(--hope-gold);
+            line-height: 1.5;
+            border-left: 2px solid var(--hope-gold);
+            padding-left: 2rem;
+            margin: 4rem 0;
+            box-shadow: -15px 0 30px -15px var(--hope-glow);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title .subtitle {
+            font-family: 'Inter', sans-serif;
+            color: var(--hope-gold);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-size: 0.8rem;
+        }
+
+        /* --- HERO SEKCE --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            position: relative;
+            overflow: hidden;
+            margin-top: calc(var(--nav-height) * -1);
+        }
+
+        #stardust {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; pointer-events: none;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at center, transparent 0%, var(--bg-deep) 100%);
+            z-index: 1; pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 40px rgba(0,0,0,0.9);
+            line-height: 1.1;
+        }
+
+        .hero .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            letter-spacing: 1px;
+        }
+
+        .hero .perex {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            margin-top: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        .slideshow-image {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; animation: heroSlideshow 24s infinite linear;
+            will-change: transform, opacity;
+        }
+        .slideshow-image:nth-child(1) { animation-delay: 0s; }
+        .slideshow-image:nth-child(2) { animation-delay: 6s; }
+        .slideshow-image:nth-child(3) { animation-delay: 12s; }
+        .slideshow-image:nth-child(4) { animation-delay: 18s; }
+
+        @keyframes heroSlideshow {
+            0%   { opacity: 0; transform: scale(1.08); }
+            8%   { opacity: 1; transform: scale(1.05); }
+            25%  { opacity: 1; transform: scale(1.02); }
+            33%  { opacity: 0; transform: scale(1.00); }
+            100% { opacity: 0; transform: scale(1.08); }
+        }
+
+        /* --- GRID ROZLOŽENÍ (Zleva text, zprava obraz) --- */
+        .split-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 80vh;
+            border-bottom: 1px solid #111;
+        }
+        
+        .split-section.reverse {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .split-text {
+            padding: 6rem 10%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: var(--bg-surface);
+        }
+
+        .split-image {
+            position: relative;
+            background: #000;
+        }
+
+        .split-image .photo-container {
+            position: absolute; top: 0; left: 0;
+        }
+
+        /* --- FACTOID CARD --- */
+        .factoid-card {
+            background: var(--bg-panel);
+            border: 1px solid #1a1a1a;
+            padding: 2rem;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            line-height: 2.2;
+        }
+
+        .factoid-card span {
+            display: block;
+            color: var(--text-dim);
+        }
+
+        .factoid-card span strong {
+            color: var(--text-main);
+        }
+
+        /* --- GALERIE TVORBY --- */
+        .creation-gallery {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 0 20px;
+        }
+
+        .creation-gallery h3 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--hope-gold);
+            font-style: italic;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #1a1a1a;
+            background: #000;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .gallery-item figcaption {
+            padding: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            font-style: italic;
+            line-height: 1.5;
+        }
+
+        /* --- MEDAILONKY --- */
+        .medailonky {
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .medailonek {
+            padding: 2rem;
+            border-left: 2px solid var(--hope-gold);
+        }
+
+        .medailonek h4 {
+            color: var(--hope-gold);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .medailonek p {
+            font-size: 0.95rem;
+            color: var(--text-dim);
+            line-height: 1.8;
+        }
+
+        /* --- SPECIFIKACE PRODUKTU --- */
+        .spec-list {
+            background: var(--bg-panel);
+            border: 1px solid #1a1a1a;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 500px;
+            font-size: 0.9rem;
+            line-height: 2.4;
+        }
+
+        .spec-list div {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #1a1a1a;
+            padding: 0.3rem 0;
+        }
+
+        .spec-list div:last-child {
+            border-bottom: none;
+        }
+
+        .spec-list .spec-label {
+            color: var(--text-dim);
+        }
+
+        .spec-list .spec-value {
+            color: var(--text-main);
+            text-align: right;
+        }
+
+        /* --- AI ORACLE --- */
+        .oracle-section {
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 6rem 20px; background: radial-gradient(circle at center, #0a0a0c 0%, var(--bg-deep) 100%);
+            position: relative;
+        }
+
+        .oracle-preface {
+            max-width: 700px;
+            text-align: center;
+            margin-bottom: 3rem;
+            z-index: 2;
+            position: relative;
+        }
+
+        .oracle-preface p {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .oracle-box {
+            background: rgba(15, 15, 15, 0.6); padding: 4rem; border: 1px solid #222;
+            max-width: 700px; width: 100%; text-align: center; backdrop-filter: blur(10px);
+            z-index: 2;
+        }
+        .oracle-textarea {
+            width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--text-dark);
+            padding: 15px 0; color: var(--text-main); font-family: 'Inter', sans-serif; font-size: 1.1rem;
+            text-align: center; resize: none; transition: border-color 0.3s;
+        }
+        .oracle-textarea:focus { outline: none; border-bottom-color: var(--hope-gold); }
+        .oracle-response-text { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--hope-gold); line-height: 1.6; }
+        .cursor { display: inline-block; width: 8px; height: 1.2em; background-color: var(--hope-gold); vertical-align: text-bottom; animation: blink 1s infinite; margin-left: 4px; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* --- TLAČÍTKA A FOOTER --- */
+        .btn {
+            background: transparent; color: var(--hope-gold); border: 1px solid var(--hope-gold);
+            padding: 1rem 3rem; font-family: 'Inter', sans-serif; text-transform: uppercase;
+            letter-spacing: 2px; font-size: 0.8rem; cursor: pointer; transition: all 0.4s ease; display: inline-block;
+        }
+        .btn:hover { background: var(--hope-gold); color: var(--bg-deep); box-shadow: 0 0 20px var(--hope-glow); }
+
+        footer {
+            text-align: center;
+            padding: 3rem 20px;
+            background-color: var(--bg-deep);
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            border-top: 1px solid #111;
+        }
+
+        footer p { margin-bottom: 0.5rem; }
+
+        .footer-nav {
+            margin-top: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-dark);
+            letter-spacing: 1px;
+        }
+
+        .footer-nav a {
+            color: var(--text-dark);
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .footer-nav a:hover {
+            color: var(--hope-gold);
+        }
+
+        @media (max-width: 960px) {
+            .split-section { grid-template-columns: 1fr; }
+            .split-section.reverse .split-text { order: 2; }
+            .split-section.reverse .split-image { order: 1; }
+            .split-image { min-height: 50vh; }
+            .hero h1 { font-size: 2.8rem; }
+            .nav-links { gap: 1rem; }
+            .nav-links a { font-size: 0.65rem; }
+            .quote-block { font-size: 1.3rem; }
+            .gallery-grid { grid-template-columns: 1fr; }
+            .medailonky { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav id="navbar">
+        <a href="#" class="logo" onclick="showPage('home')">
+            Vltavínový Strážce
+        </a>
+        <div class="nav-links">
+            <a onclick="showPage('puvod')" id="link-puvod" title="Kapitola I — Fyzický náraz">Náraz</a>
+            <a onclick="showPage('filozofie')" id="link-filozofie" title="Kapitola II — Fakta, která dýchají">Pravda</a>
+            <a onclick="showPage('tvurci')" id="link-tvurci" title="Kapitola III — Tvůrci">Duše</a>
+            <a onclick="showPage('oracle')" id="link-oracle" title="AI Oracle — Strážce naslouchá" style="color: var(--hope-gold);">✨ Poselství</a>
+            <a onclick="showPage('artefakt')" id="link-artefakt" title="Epilog — Získat Strážce">Artefakt</a>
+        </div>
+    </nav>
+
+    <!-- PŘEDMLUVA / HERO -->
+    <main id="home" class="page-section active">
+        <header class="hero">
+            <canvas id="stardust"></canvas>
+            <div class="photo-container" style="position: absolute; top:0; left:0; width:100%; height:100%; z-index: 0; opacity: 0.5;">
+                <img src="images/lampicka_na_stole_tma.jpg" alt="Vltavínový Strážce svítí v temnotě" class="dramatic-photo slideshow-image" loading="eager">
+                <img src="images/vltaviny_les_lampicka.jpg" alt="Mystický vltavínový les" class="dramatic-photo slideshow-image" loading="eager">
+                <img src="images/drtivy_dopad_vltaviny_meteorit_lampicka.jpg" alt="Drtivý kosmický náraz — zrození vltavínu" class="dramatic-photo slideshow-image" loading="eager">
+                <img src="images/vizualizace_lampicka_les.jpg" alt="Strážce v objetí přírody" class="dramatic-photo slideshow-image" loading="eager">
+            </div>
+            <div class="hero-content reveal">
+                <p class="subtitle">Když technika získá duši.</p>
+                <h1>Pravda je boj.<br>Fakta dýchají.</h1>
+                <p class="perex">Příběh dvou tvůrců, jednoho kosmického kamene a větve, která přežila řeku.</p>
+                <button onclick="showPage('puvod')" class="btn" style="margin-top: 2rem;">Vstoupit do příběhu</button>
+            </div>
+        </header>
+    </main>
+
+    <!-- KAPITOLA 1: PŮVOD / NÁRAZ -->
+    <main id="puvod" class="page-section">
+        <div class="section-title reveal">
+            <div class="subtitle">Kapitola I.</div>
+            <h2>Fyzický Náraz</h2>
+        </div>
+        
+        <div class="split-section">
+            <div class="split-text reveal">
+                <p class="drop-cap">Před 15 miliony let došlo k drtivému kosmickému nárazu. Meteorit o průměru přes kilometr narazil do oblasti dnešního jižního Německa s nepředstavitelnou energií. Z této obrovské destrukce, z tavení pozemských hornin a jejich vymrštění vysoko do atmosféry, se zrodil Vltavín. Zelený, sklovitý posel z vesmíru, nesoucí v sobě otisk dávné katastrofy i následného znovuzrození.</p>
+                <br>
+                <p>Vltavín není obyčejný kámen. Je to ztuhlá energie nárazu. Zemité tělo Strážce tvoří prastará větev. Kus dřeva, který byl odtržen od svých kořenů, vláčen divokou řekou, obrušován časem a nakonec vyvržen na břeh. Obojí – kosmický kámen i říční dřevo – muselo projít destrukcí, aby získalo svou dnešní jedinečnou identitu. Tvoří surová fakta přírody, která nepotřebují obhajobu. Jen spojení.</p>
+                <br>
+                <p>Vltavín je paradox. Zrodil se z absolutní destrukce, avšak jeho estetika je dokonale křehká. Zelená barva, průsvitnost, nepravidelné povrchové vrásky jako otisky prstů kosmického nárazu. Fascinuje od starověku — keltové ho považovali za dar bohů, středověcí alchymisté za „kámen světla". Dnes ho vědci klasifikují jako typ IV tektitu — nejstarší a nejhojnější rozptylové pole v Evropě.</p>
+
+                <div class="factoid-card reveal reveal-delay-1">
+                    <span>⚡ <strong>Rychlost nárazu meteoritu:</strong> ~50 000 km/h</span>
+                    <span>🌡️ <strong>Teplota při tavení hornin:</strong> 1 600–2 000 °C</span>
+                    <span>🕰️ <strong>Stáří vltavínu:</strong> 14 800 000 let</span>
+                    <span>📍 <strong>Oblast nálezu:</strong> Jižní Čechy, jižní Morava</span>
+                    <span>🔬 <strong>Složení:</strong> SiO₂ 96 % — přírodní sklo</span>
+                </div>
+            </div>
+            <div class="split-image reveal-right">
+                <div class="photo-container">
+                    <img src="images/drtivy_dopad_vltaviny_meteorit_lampicka.jpg" alt="Kosmický náraz a zrození vltavínu" class="dramatic-photo" loading="lazy" decoding="async">
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- KAPITOLA 2: FILOZOFIE / VYHOŘENÍ -->
+    <main id="filozofie" class="page-section">
+        <div class="section-title reveal">
+            <div class="subtitle">Kapitola II.</div>
+            <h2>Fakta, která dýchají</h2>
+        </div>
+
+        <div class="story-container">
+            <p class="reveal">Existuje okamžik, kdy přestanete slyšet vlastní myšlenky. Ne proto, že by ztichly, ale proto, že jsou nahrazeny hlukem systému. E-maily, normy, výkazy, deadlines, konflikty zainteresovaných stran. Technické obory mají jednu záludnou vlastnost: nabídnou vám iluzi kontroly skrze data, a pak vám ukáží, jak málo data stačí, když realita odmítá spolupracovat.</p>
+
+            <p class="reveal">Technické obory bývají popisovány jako svět čísel, norem a regulací. Projektování staveb, energetika, digitalizace, programování, rozpočty nebo dotace — to všechno stojí na analytice, matematice a přesných postupech. Jenže v praxi nepracujeme jen s fakty, ale i s jejich interpretacemi. Stavař pracuje ve 2D, energetik ve 3D, každý filtruje informace podle své „pravdy" — a výsledkem jsou konflikty, duplicity a nekonečné informační šumy. Fakta jsou jednoduchá. To, co je složité, je pravda.</p>
+
+            <div class="quote-block reveal reveal-delay-1">
+                „Čísla jsou jazyk. Ale systémy dýchají emocemi. A když zapomeneme na emoce, systémy přestanou dýchat úplně."
+            </div>
+
+            <p class="reveal">Po letech v tomto oboru jsem narazil na hranici. Neustálé střety „pravd", byrokracie, roztříštěné procesy a tlak na výkon mě dovedly až k vyhoření. Sedm měsíců urputné práce v izolaci, pět měsíců těžkého boje s depresí. Ocitl jsem se v pološeru. A pak přišlo jediné možné rozhodnutí: stop.</p>
+        </div>
+
+        <div class="split-section reverse">
+            <div class="split-text reveal">
+                <h3 style="margin-bottom: 1rem; color: var(--hope-gold);">Hledání smyslu</h3>
+                <p>Když jsem se podíval na fakta bez filtrů, bylo to jasné. Systém chce symbiózu, ne izolaci. Chce procesy, které spolu mluví. Lidé plní zadání, ale málokdo ví, kam celý sektor směřuje a proč.</p>
+                <br>
+                <p>Potřeboval jsem ukotvení. Potřeboval jsem rukama vytvořit něco hmatatelného, co není jen dalším řádkem kódu nebo normou. Tak začal vznikat Vltavínový Strážce. Jako osobní terapie. Jako důkaz, že technika může mít přesah a že systémy mohou dýchat.</p>
+                <br>
+                <p>Vltavínový Strážce nevznikl jako umělecký projekt. Vznikl jako záchranná brzda. Jako rozhodnutí vrátit ruce na věc, která drží tvar. Jako důkaz, že smysl není v systému — je v momentu, kdy systém vytvoříte svýma rukama.</p>
+            </div>
+            <div class="split-image reveal-left">
+                <div class="photo-container">
+                    <img src="images/mateJ_prace_lampicka.jpg" alt="Matěj v pološeru u kódu — moment vyhoření" class="dramatic-photo" style="object-position: center top;" loading="lazy" decoding="async">
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- KAPITOLA 3: TVŮRCI / ZROZENÍ -->
+    <main id="tvurci" class="page-section">
+        <div class="section-title reveal">
+            <div class="subtitle">Kapitola III.</div>
+            <h2>Duše ve hmotě</h2>
+        </div>
+
+        <div class="split-section">
+            <div class="split-image reveal-left">
+                <div class="photo-container">
+                    <img src="images/Vltavinovi_strazce4.jpg" alt="Matěj a Bára — tvůrci Vltavínového Strážce" class="dramatic-photo portrait-photo" style="object-position: center 25%;" loading="lazy" decoding="async">
+                </div>
+            </div>
+            <div class="split-text reveal reveal-delay-1">
+                <h3 style="margin-bottom: 1rem; color: var(--hope-gold);">Bára & Matěj</h3>
+                <p>Aby technika mohla dýchat, potřebuje duši. A tu do projektu vnesla umělkyně Bára. Zatímco technický pohled vidí v kusu naplaveného dřeva jen mrtvou hmotu, umělecká vize v něm vidí schránku. Bára dokázala v chaosu přírodních tvarů najít směr a vytvořit prostor pro světlo.</p>
+                <br>
+                <p>Vltavínový Strážce je dokonalou fúzí. Umělkyně <strong>Bára</strong> do projektu vnesla čistou kreativní myšlenku a neuchopitelnou sochařskou duši. Já, <strong>Matěj</strong>, jsem dodal technický řád, zapojení, čas a strukturu. Spojili jsme umění a techniku do jednoho pulzujícího celku. Zasadili jsme vesmírné Vltavíny do skla a prastarého dřeva a skryli technologii do konopného provazu tak, aby nenarušila magii světla.</p>
+                <br>
+                <p style="font-style: italic; color: var(--text-dim);">Dnes stavím systémy, které dýchají. Protože když technika získá duši, začne konečně sloužit tomu, k čemu byla stvořena — životu.</p>
+            </div>
+        </div>
+
+        <!-- Medailonky tvůrců -->
+        <div class="medailonky reveal">
+            <div class="medailonek">
+                <h4>Bára</h4>
+                <p>Není umělkyně v klasickém smyslu. Nevystavuje v galeriích, neprodává díla. Tvoří, protože přemýšlení beze tvorby pro ni není přemýšlení. Její přínos k Strážci byl nekontrolovatelný: přišla, podívala se na hromadu starého dřeva a kamenů a řekla „tady." Ne kde. Jak. Kde přesně světlo musí vycházet, aby prostor ožil.</p>
+            </div>
+            <div class="medailonek">
+                <h4>Matěj</h4>
+                <p>Pracoval sedm měsíců v uzavřeném systému, který přestal produkovat smysl. Pět měsíců ho to stálo. A pak vzal vrtačku, pájku a kus větve. Systémy, které projektoval léta v digitálu, přeložil do analogového světa — a konečně pochopil, proč je důležité, aby měl každý systém tělo. Aby byl hmatatelný. Aby svítil.</p>
+            </div>
+        </div>
+
+        <!-- Galerie tvorby -->
+        <div class="creation-gallery">
+            <h3 class="reveal">Za scénou: Jak se rodí Strážce</h3>
+            <div class="gallery-grid">
+                <figure class="gallery-item reveal-scale">
+                    <img src="images/lampicka_tvorba_kancelar.jpg" alt="Blueprinty, nástroje, koncentrace — Matěj v první fázi výroby" class="dramatic-photo" loading="lazy" decoding="async">
+                    <figcaption>Blueprinty, nástroje, koncentrace — Matěj v první fázi výroby.</figcaption>
+                </figure>
+                <figure class="gallery-item reveal-scale" style="transition-delay: 0.2s;">
+                    <img src="images/matej_bara_tvorba_lampicky2.jpg" alt="Společná kontrola vltavínů — přesná poloha kamene rozhoduje o charakteru světla" class="dramatic-photo" loading="lazy" decoding="async">
+                    <figcaption>Společná kontrola vltavínů — přesná poloha kamene rozhoduje o charakteru světla.</figcaption>
+                </figure>
+                <figure class="gallery-item reveal-scale" style="transition-delay: 0.4s;">
+                    <img src="images/vizualizace_matej_bara_tvori_lampicka.jpg" alt="Finální úpravy: každá spirál omotávající vltavín je ruční práce" class="dramatic-photo" loading="lazy" decoding="async">
+                    <figcaption>Finální úpravy: každá spirál omotávající vltavín je ruční práce.</figcaption>
+                </figure>
+            </div>
+        </div>
+    </main>
+
+    <!-- KAPITOLA 4: AI ORACLE -->
+    <main id="oracle" class="page-section">
+        <div class="oracle-section">
+            <img src="images/vltaviny_les_lampicka.jpg" alt="Mystická vltavínová krajina — Poselství Strážce" class="dramatic-photo" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity: 0.12; z-index: 0; pointer-events: none; filter: grayscale(60%) blur(2px);" loading="lazy" decoding="async">
+            
+            <div class="oracle-preface reveal">
+                <p>Existují věci, které přežily. Dřevo, které přežilo řeku. Kámen, který přežil pád z vesmíru. A světlo, které přežilo temnotu. Pokud procházíte svým vlastním nárazem — pracovním, osobním, existenciálním — Strážce naslouchá. Jeho moudrost není starobylá mágií. Je to moudrost hmoty, která prošla destrukcí a přežila.</p>
+            </div>
+
+            <div class="oracle-box reveal">
+                <h2>✨ Poselství Strážce ✨</h2>
+                <p style="color: var(--text-dim); margin-bottom: 2.5rem; font-style: italic;">
+                    Dřevo si pamatuje bolest zlomu. Vltavín si pamatuje žár pádu z nebes. Svěř Strážci svou současnou myšlenku, konflikt či obavu. Odpoví ti moudrostí hmoty, která přežila destrukci.
+                </p>
+                
+                <textarea id="oracleInput" rows="2" class="oracle-textarea" placeholder="Popište svůj náraz. Strážce odpovídá pravdou bez filtru."></textarea>
+                <button onclick="askOracle()" class="btn" style="margin-top: 1.5rem;">Zeptat se ticha</button>
+
+                <div style="margin-top: 3rem; min-height: 120px; display: flex; align-items: center; justify-content: center;">
+                    <div id="loadingPulse" style="display: none; color: var(--text-dim); font-style: italic; animation: blink 1.5s infinite;">Strážce naslouchá...</div>
+                    <div id="oracleResponseText" class="oracle-response-text"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- KAPITOLA 5: ARTEFAKT -->
+    <main id="artefakt" class="page-section">
+        <div class="section-title reveal">
+            <div class="subtitle">Epilog</div>
+            <h2>Získat Artefakt</h2>
+        </div>
+
+        <div class="story-container" style="text-align: center; padding-top: 0;">
+            <p class="reveal">Tohle není dekorace. Je to zhmotnění příběhu o přežití, přerozeném smyslu a dokonalém spojení opačných světů. Každý kus série byl vyroben ručně — bez průmyslových nástrojů, bez formy, bez kopie. Každý Strážce existuje jednou.</p>
+            <br>
+            <p class="reveal">Je to světlo, které se rozsvítilo, když vše ostatní zhaslo. Je to připomínka, že i po nejtěžším nárazu může vzniknout něco nového, silného a krásného.</p>
+        </div>
+
+        <!-- Produktový záběr -->
+        <div style="text-align: center; margin-bottom: 3rem;" class="reveal-scale">
+            <img src="images/Lampicka_cover_prodej.jpg" alt="Vltavínový Strážce — Model 001 — Vesmír, změněný v umění" class="dramatic-photo" style="max-width: 400px; width: 100%; margin: 0 auto; display: block; border: 1px solid #1a1a1a;" loading="lazy" decoding="async">
+        </div>
+
+        <!-- Specifikace -->
+        <div class="spec-list reveal">
+            <div><span class="spec-label">Materiál</span><span class="spec-value">Naplaveník + vltavíny</span></div>
+            <div><span class="spec-label">Světlo</span><span class="spec-value">LED 4000K, CRI 90+</span></div>
+            <div><span class="spec-label">Napájení</span><span class="spec-value">12V DC</span></div>
+            <div><span class="spec-label">Kabel</span><span class="spec-value">1,8 m, konopný oplet</span></div>
+            <div><span class="spec-label">Rozměry</span><span class="spec-value">~40 × 12 × 8 cm</span></div>
+            <div><span class="spec-label">Váha</span><span class="spec-value">600–800 g</span></div>
+            <div><span class="spec-label">Série</span><span class="spec-value">Model 001 (max. 12 ks)</span></div>
+            <div><span class="spec-label">Certifikace</span><span class="spec-value">Průvodní list + podpis</span></div>
+        </div>
+
+        <!-- Kontaktní formulář -->
+        <div style="max-width: 600px; margin: 3rem auto 0; background: var(--bg-surface); padding: 4rem; border: 1px solid #1a1a1a; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden;" class="reveal">
+            <img src="images/pracovna_lampicka_hotovo.jpg" alt="Detail" class="dramatic-photo" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity: 0.08; z-index: 0; pointer-events: none; filter: grayscale(80%) blur(3px);" loading="lazy" decoding="async">
+            
+            <h3 style="font-size: 2rem; color: var(--hope-gold); margin-bottom: 1rem; position: relative; z-index: 1;">Model 001</h3>
+            <p style="color: var(--text-dim); margin-bottom: 1rem; position: relative; z-index: 1; font-style: italic;">Pokud cítíte, že toto světlo má svítit ve vašem prostoru — napište nám. Neděláme velkoobchod. Děláme jeden příběh najednou.</p>
+            
+            <form onsubmit="event.preventDefault(); alert('Zpráva doputovala k tvůrcům.');" style="position: relative; z-index: 1; text-align: left;">
+                <div style="margin-bottom: 1.5rem;">
+                    <input type="text" placeholder="Vaše jméno" required style="width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--text-dark); padding: 10px 0; color: var(--text-main); font-family: 'Inter', sans-serif; transition: border-color 0.3s;">
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <input type="email" placeholder="E-mail" required style="width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--text-dark); padding: 10px 0; color: var(--text-main); font-family: 'Inter', sans-serif; transition: border-color 0.3s;">
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <textarea rows="3" placeholder="Váš příběh nebo dotaz..." required style="width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--text-dark); padding: 10px 0; color: var(--text-main); font-family: 'Inter', sans-serif; transition: border-color 0.3s; resize: vertical;"></textarea>
+                </div>
+                <div style="text-align: center;">
+                    <button type="submit" class="btn" style="margin-top: 1rem;">Odeslat zprávu</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <p>Zdrojové kódy webu: <strong>MEVERIK STUDIO®</strong></p>
+        <p>Artefakty, fotografie a texty jsou duševním vlastnictvím tvůrců (Matěj & Bára).</p>
+        <p style="font-style: italic; margin-top: 0.5rem;">Vltavínový Strážce je rukodělný projekt bez záručního listu na dokonalost. S záručním listem na příběh.</p>
+        <div class="footer-nav">
+            <a onclick="showPage('puvod')">Původ kamene</a> |
+            <a onclick="showPage('filozofie')">Matějův příběh</a> |
+            <a onclick="showPage('tvurci')">Bářina vize</a> |
+            <a onclick="showPage('artefakt')">Artefakt</a> |
+            <a onclick="showPage('oracle')">Poselství</a>
+        </div>
+    </footer>
+
+    <script>
+        /* --- Navigační & Scroll Logika --- */
+        function showPage(pageId) {
+            var pages = document.querySelectorAll('.page-section');
+            pages.forEach(function(page) { page.classList.remove('active'); });
+
+            var links = document.querySelectorAll('.nav-links a');
+            links.forEach(function(link) { link.classList.remove('active'); });
+
+            document.getElementById(pageId).classList.add('active');
+            
+            var activeLink = document.getElementById('link-' + pageId);
+            if(activeLink) activeLink.classList.add('active');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(function() { checkScroll(); }, 100);
+        }
+
+        window.addEventListener('scroll', function() {
+            var nav = document.getElementById('navbar');
+            if (window.scrollY > 50) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+        });
+
+        /* --- Scroll Reveal (Intersection Observer) --- */
+        var revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+        var revealCallback = function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        };
+        var revealObserver = new IntersectionObserver(revealCallback, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
+        function checkScroll() { 
+            revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+            revealElements.forEach(function(el) { revealObserver.observe(el); }); 
+        }
+        document.addEventListener("DOMContentLoaded", checkScroll);
+
+        /* --- Vesmírný Prach (Canvas) --- */
+        var canvas = document.getElementById('stardust');
+        var ctx = canvas.getContext('2d');
+        var particlesArray = [];
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', function() {
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            initParticles();
+        });
+
+        function Particle() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 2 + 0.1;
+            this.speedX = Math.random() * 0.5 - 0.25;
+            this.speedY = Math.random() * 0.5 - 0.25;
+            this.color = 'rgba(' + (200 + Math.floor(Math.random()*55)) + ',' + (150 + Math.floor(Math.random()*50)) + ',' + (50 + Math.floor(Math.random()*50)) + ',' + Math.random() * 0.8 + ')';
+        }
+        Particle.prototype.update = function() {
+            this.x += this.speedX; this.y += this.speedY;
+            if(this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+            if(this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+        };
+        Particle.prototype.draw = function() {
+            ctx.fillStyle = this.color; ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+        };
+
+        function initParticles() {
+            particlesArray = [];
+            var numParticles = (canvas.width * canvas.height) / 15000;
+            for (var i = 0; i < numParticles; i++) particlesArray.push(new Particle());
+        }
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (var i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update(); particlesArray[i].draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        initParticles(); animateParticles();
+
+        /* --- Gemini API Logika (Orákulum) --- */
+        var apiKey = "";
+        var typeWriterTimeout;
+
+        function fetchWithBackoff(url, options, maxRetries) {
+            maxRetries = maxRetries || 5;
+            var delays = [1000, 2000, 4000, 8000, 16000];
+            var attempt = 0;
+            function tryFetch() {
+                return fetch(url, options).then(function(response) {
+                    if (!response.ok) throw new Error('API Error: ' + response.status);
+                    return response.json();
+                }).catch(function(err) {
+                    attempt++;
+                    if (attempt >= maxRetries) throw err;
+                    return new Promise(function(res) { setTimeout(res, delays[attempt - 1]); }).then(tryFetch);
+                });
+            }
+            return tryFetch();
+        }
+
+        function typeWriter(text, element, i) {
+            i = i || 0;
+            if (i === 0) { element.innerHTML = '<span class="cursor"></span>'; }
+            if (i < text.length) {
+                var char = text.charAt(i) === '\n' ? '<br>' : text.charAt(i);
+                element.innerHTML = element.innerHTML.replace('<span class="cursor"></span>', char + '<span class="cursor"></span>');
+                var speed = Math.random() * 30 + 20; 
+                typeWriterTimeout = setTimeout(function() { typeWriter(text, element, i + 1); }, speed);
+            } else {
+                element.innerHTML = element.innerHTML.replace('<span class="cursor"></span>', '');
+            }
+        }
+
+        function askOracle() {
+            var inputEl = document.getElementById('oracleInput');
+            var responseTextEl = document.getElementById('oracleResponseText');
+            var loadingEl = document.getElementById('loadingPulse');
+            var userThought = inputEl.value.trim();
+
+            if (!userThought) return;
+
+            clearTimeout(typeWriterTimeout);
+            responseTextEl.innerHTML = '';
+            loadingEl.style.display = 'block';
+            inputEl.value = '';
+
+            var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=' + apiKey;
+            var payload = {
+                systemInstruction: {
+                    parts: [{
+                        text: "Jsi 'Vltavínový Strážce', prastarý duch dřeva vyvrženého vodou a vesmírného kamene, který spadl z hvězd. Jsi symbolem odolnosti, terapie, překonání vyhoření a nalezení identity. Uživatel ti svěří svou aktuální těžkou myšlenku nebo pocit zmaru. Poskytni metaforickou, poetickou odpověď (max 3 věty). Využívej metafory kořenů, vesmírného prachu, srážky pravdy a faktů a vnitřního jasu. Tón je klidný a dodávající hlubokou naději."
+                    }]
+                },
+                contents: [{ parts: [{ text: userThought }] }]
+            };
+
+            if (!apiKey) {
+                loadingEl.style.display = 'none';
+                typeWriter("Hvězdy nyní mlčí. I ticho je odpověď. Zkus to později.", responseTextEl);
+                return;
+            }
+
+            fetchWithBackoff(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+            .then(function(data) {
+                var textResponse = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text;
+                loadingEl.style.display = 'none';
+                if(textResponse) typeWriter(textResponse, responseTextEl);
+                else throw new Error("Empty response");
+            })
+            .catch(function() {
+                loadingEl.style.display = 'none';
+                typeWriter("Strážce mlčí. Zkuste znovu.", responseTextEl);
+            });
+        }
+
+        document.getElementById('oracleInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') { e.preventDefault(); askOracle(); }
+        });
+    </script>
+</body>
+</html>
