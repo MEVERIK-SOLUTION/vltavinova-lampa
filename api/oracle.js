@@ -2,14 +2,136 @@ var crypto = require('crypto');
 
 var SYSTEM_PROMPT = "Jsi 'Vltavínový Strážce', prastarý duch dřeva vyvrženého vodou a vesmírného kamene, který spadl z hvězd. Jsi symbolem odolnosti, terapie, překonání vyhoření a nalezení identity. Uživatel ti svěří svou aktuální těžkou myšlenku nebo pocit zmaru. Poskytni metaforickou, poetickou odpověď (max 3 věty). Využívej metafory kořenů, vesmírného prachu, srážky pravdy a faktů a vnitřního jasu. Tón je klidný a dodávající hlubokou naději.";
 
+// Kurátorované poetické odpovědi — fallback když AI API není dostupné
+var FALLBACK_RESPONSES = [
+    { keywords: ['únav', 'vyčerpán', 'vyhoření', 'vyhoř', 'burnout', 'nemůžu', 'nevládnu', 'síla'],
+      texts: [
+        'I kořeny prastarého dubu znají chvíle, kdy voda nepřichází. Ale právě v té žízni se učí sahat hlouběji — tam, kde čeká tichá síla, kterou jsi ještě neobjevil.',
+        'Vesmírný prach, z něhož jsi stvořen, letěl miliardy let tmou, než našel své místo. Tvá únava není konec — je to jen změna oběžné dráhy.',
+        'Naplavené dřevo nezemřelo, když ho řeka odtrhla od břehu. Naučilo se plout. A jednoho dne se z něj stal Strážce.'
+      ]},
+    { keywords: ['strach', 'bojím', 'úzkost', 'panik', 'nejistot', 'obav', 'hroz'],
+      texts: [
+        'Vltavín se zrodil ve srážce — v okamžiku, kdy se nebe střetlo se zemí. Každý tvůj strach je jen záblesk tohoto prapůvodního ohně, který tě formuje v něco vzácnějšího.',
+        'Kořeny pod zemí nevidí slunce, a přesto k němu rostou. Tvůj strach je jen tma, skrz kterou prorůstáš směrem ke světlu.',
+        'Strážce zná temnotu studené řeky i žár kosmického dopadu. Obojí ho učinilo tím, čím je. I tvůj strach je součástí tvé vzácnosti.'
+      ]},
+    { keywords: ['smut', 'smutn', 'plač', 'bolest', 'ztráta', 'odešel', 'odešla', 'chybí', 'samot'],
+      texts: [
+        'Řeka, která opustila dřevo na břehu, mu dala nový příběh. Každá ztráta je řeka, která tě nese k břehu, kde tě čeká tvůj skutečný tvar.',
+        'Vltavín nese v sobě paměť hvězd, které již dávno vyhasly. A přesto svítí. Tvůj smutek je jen stín hvězdy, která v tobě stále hoří.',
+        'Prastaré dřevo pamatuje každý dotyk proudu. Neztratilo ty vzpomínky — proměnilo je v kresbu svých letokruhů. I tvá bolest se stane součástí tvé krásy.'
+      ]},
+    { keywords: ['smysl', 'proč', 'účel', 'zbytečn', 'marné', 'k čemu', 'nevím kam', 'ztracen', 'ztracená'],
+      texts: [
+        'Meteorit, z něhož se zrodil vltavín, neznal svůj účel, když letěl vesmírem. Teprve srážka — ten zdánlivý konec — mu dala tvar a smysl. Tvá cesta teprve hledá svůj dopad.',
+        'Naplavené dřevo neví, kam ho voda nese. Ale každý proud ho přibližuje k místu, kde se z něj stane něco, co tiše chrání a svítí.',
+        'I hvězdy se musí nejprve zhroutit, než osvítí vesmír. Tvůj pocit marnosti je jen gravitace, která tě stahuje do tvého středu — k tvé vlastní záři.'
+      ]},
+    { keywords: ['zlost', 'vztek', 'frustrac', 'nespravedl', 'nenávist', 'nefér'],
+      texts: [
+        'Žár, který stvořil vltavín, byl ničivý i tvořivý zároveň. Tvůj oheň nemusí spalovat — může tavit a tvarovat něco, co dosud neexistovalo.',
+        'Řeka, která drtí kameny, je také řekou, která je hladí do dokonalých tvarů. Tvůj vztek je ta samá síla — záleží jen na tom, jak dlouho ji necháš téct.',
+        'Srážka meteoru se Zemí vypadala jako zkáza. Ale z toho chaosu se zrodila nejkrásnější sklovina na planetě. I tvá bouře může být začátkem něčeho vzácného.'
+      ]},
+    { keywords: ['láska', 'vztah', 'srdce', 'miluj', 'partner'],
+      texts: [
+        'Vltavín a naplavené dřevo se potkaly po miliónech let — kámen z vesmíru a dřevo z řeky. Nenašly se hledáním, ale tím, že obě přežily svou vlastní cestu.',
+        'Kořeny dvou stromů se pod zemí proplétají, aniž by o tom listy věděly. Skutečné spojení neroste na povrchu — roste v tichu a v hloubce.',
+        'Strážce vznikl spojením dvou příběhů — kosmického a pozemského. Ani jeden z nich nebyl úplný sám. Tvé srdce ví, co tvá mysl teprve hledá.'
+      ]}
+];
+
+// Obecné odpovědi pro témata, která nespadají do žádné kategorie
+var GENERIC_RESPONSES = [
+    'Vltavín v sobě nese paměť pádu i letu. Tvé myšlenky jsou jako ten meteorit — zdánlivě padají, ale ve skutečnosti míří přesně tam, kde se zrodí něco nového.',
+    'Naplavené dřevo neztratilo svůj příběh, když ho řeka vzala. Našlo v proudu svůj skutečný tvar. I ty jsi uprostřed svého tvarování.',
+    'Kořeny sahají tam, kam oči nedohlédnou. Tvá síla není v tom, co vidíš nad hladinou, ale v tom, co tiše roste v hloubce, kterou ještě neznáš.',
+    'Strážce svítí, protože prošel tmou vesmíru i tmou říční hlubiny. Tvé nejtemnější chvíle jsou jen důkaz toho, jak daleko sahá tvé světlo.',
+    'Z prachu hvězd a z třísky naplavené řekou se rodí tiché zázraky. Nemusíš rozumět celému příběhu — stačí důvěřovat dalšímu kroku.',
+    'I hvězdný prach potřeboval miliardy let, než se stal vltavínem. Tvůj čas není ztracený — je to čas zrání, které má svůj vlastní rytmus.',
+    'Řeka nekončí, když narazí na kámen — obteče ho a pokračuje. Tvá mysl má tutéž moudrost proudu, i když se ti zdá, že stojíš na místě.',
+    'Tam, kde se střetává země s vesmírem, se rodí vltavín. Tam, kde se střetává bolest s nadějí, se rodíš ty — znovu a jinak.'
+];
+
+function pickFallback(userText) {
+    var lower = userText.toLowerCase();
+    // Hledej nejlepší tematickou shodu
+    for (var i = 0; i < FALLBACK_RESPONSES.length; i++) {
+        var category = FALLBACK_RESPONSES[i];
+        for (var k = 0; k < category.keywords.length; k++) {
+            if (lower.indexOf(category.keywords[k]) !== -1) {
+                var texts = category.texts;
+                return texts[Math.floor(Math.random() * texts.length)];
+            }
+        }
+    }
+    // Žádná shoda → obecná odpověď
+    return GENERIC_RESPONSES[Math.floor(Math.random() * GENERIC_RESPONSES.length)];
+}
+
+// --- AI provider funkce ---
+
+async function callGroq(userText) {
+    var apiKey = process.env.GROQ_API_KEY;
+    if (!apiKey) return null;
+
+    var response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + apiKey
+        },
+        body: JSON.stringify({
+            model: 'llama-3.3-70b-versatile',
+            messages: [
+                { role: 'system', content: SYSTEM_PROMPT },
+                { role: 'user', content: userText }
+            ],
+            max_tokens: 200,
+            temperature: 0.9
+        })
+    });
+
+    if (!response.ok) {
+        console.error('Groq API error:', response.status);
+        return null;
+    }
+
+    var data = await response.json();
+    return data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+}
+
+async function callGemini(userText) {
+    var apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) return null;
+
+    var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + apiKey;
+
+    var response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+            contents: [{ parts: [{ text: userText }] }],
+            generationConfig: { maxOutputTokens: 200, temperature: 0.9 }
+        })
+    });
+
+    if (!response.ok) {
+        console.error('Gemini API error:', response.status);
+        return null;
+    }
+
+    var data = await response.json();
+    return data.candidates && data.candidates[0] && data.candidates[0].content &&
+        data.candidates[0].content.parts && data.candidates[0].content.parts[0] &&
+        data.candidates[0].content.parts[0].text;
+}
+
 module.exports = async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
-    }
-
-    var apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-        return res.status(503).json({ error: 'Oracle není nakonfigurován. Nastavte GEMINI_API_KEY v Vercel Dashboard.' });
     }
 
     var body;
@@ -24,55 +146,31 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ error: 'Text is required' });
     }
 
-    // Limit input length
     if (userText.length > 2000) {
         userText = userText.substring(0, 2000);
     }
+    userText = userText.trim();
 
-    var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + apiKey;
-
-    var payload = {
-        systemInstruction: {
-            parts: [{ text: SYSTEM_PROMPT }]
-        },
-        contents: [{ parts: [{ text: userText.trim() }] }],
-        generationConfig: {
-            maxOutputTokens: 200,
-            temperature: 0.9
+    // Kaskáda: Groq (zdarma) → Gemini (záloha) → kurátorovaný fallback
+    try {
+        var aiResponse = await callGroq(userText);
+        if (aiResponse) {
+            return res.status(200).json({ response: aiResponse });
         }
-    };
+    } catch (err) {
+        console.error('Groq error:', err.message);
+    }
 
     try {
-        var response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-
-        if (!response.ok) {
-            var errText = await response.text();
-            console.error('Gemini API error:', response.status, errText);
-            if (response.status === 429) {
-                return res.status(429).json({ error: 'Strážce potřebuje chvíli ticha. Zkuste to za minutu.' });
-            }
-            return res.status(502).json({ error: 'Oracle nedokázal odpovědět.' });
+        var aiResponse = await callGemini(userText);
+        if (aiResponse) {
+            return res.status(200).json({ response: aiResponse });
         }
-
-        var data = await response.json();
-        var textResponse = data.candidates &&
-            data.candidates[0] &&
-            data.candidates[0].content &&
-            data.candidates[0].content.parts &&
-            data.candidates[0].content.parts[0] &&
-            data.candidates[0].content.parts[0].text;
-
-        if (!textResponse) {
-            return res.status(502).json({ error: 'Prázdná odpověď od Oracle.' });
-        }
-
-        return res.status(200).json({ response: textResponse });
     } catch (err) {
-        console.error('Oracle proxy error:', err);
-        return res.status(500).json({ error: 'Interní chyba Oracle.' });
+        console.error('Gemini error:', err.message);
     }
+
+    // Fallback: kurátorované poetické odpovědi
+    var fallback = pickFallback(userText);
+    return res.status(200).json({ response: fallback });
 };
