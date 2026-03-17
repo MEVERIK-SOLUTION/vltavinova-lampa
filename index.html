@@ -759,18 +759,19 @@
             <h3 id="art-product-name" style="font-size: 2rem; color: var(--hope-gold); margin-bottom: 1rem; position: relative; z-index: 1;">Lampa „Vltavínový Strážce“</h3>
             <p id="art-cta-text" style="color: var(--text-dim); margin-bottom: 1rem; position: relative; z-index: 1; font-style: italic;">Pokud cítíte, že toto světlo má svítit ve vašem prostoru — napište nám. Neděláme velkoobchod. Děláme jeden příběh najednou.</p>
             
-            <form onsubmit="event.preventDefault(); alert('Zpráva doputovala k tvůrcům.');" style="position: relative; z-index: 1; text-align: left;">
+            <form id="contactForm" onsubmit="submitContact(event)" style="position: relative; z-index: 1; text-align: left;">
                 <div style="margin-bottom: 1.5rem;">
-                    <input type="text" placeholder="Vaše jméno" required style="width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--text-dark); padding: 10px 0; color: var(--text-main); font-family: 'Inter', sans-serif; transition: border-color 0.3s;">
+                    <input type="text" id="contactName" placeholder="Vaše jméno" required style="width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--text-dark); padding: 10px 0; color: var(--text-main); font-family: 'Inter', sans-serif; transition: border-color 0.3s;">
                 </div>
                 <div style="margin-bottom: 1.5rem;">
-                    <input type="email" placeholder="E-mail" required style="width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--text-dark); padding: 10px 0; color: var(--text-main); font-family: 'Inter', sans-serif; transition: border-color 0.3s;">
+                    <input type="email" id="contactEmail" placeholder="E-mail" required style="width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--text-dark); padding: 10px 0; color: var(--text-main); font-family: 'Inter', sans-serif; transition: border-color 0.3s;">
                 </div>
                 <div style="margin-bottom: 1.5rem;">
-                    <textarea rows="3" placeholder="Váš příběh nebo dotaz..." required style="width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--text-dark); padding: 10px 0; color: var(--text-main); font-family: 'Inter', sans-serif; transition: border-color 0.3s; resize: vertical;"></textarea>
+                    <textarea rows="3" id="contactText" placeholder="Váš příběh nebo dotaz..." required style="width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--text-dark); padding: 10px 0; color: var(--text-main); font-family: 'Inter', sans-serif; transition: border-color 0.3s; resize: vertical;"></textarea>
                 </div>
+                <div id="contactStatus" style="text-align: center; min-height: 1.5em; font-size: 0.85rem; margin-bottom: 0.5rem;"></div>
                 <div style="text-align: center;">
-                    <button type="submit" class="btn" style="margin-top: 1rem;">Odeslat zprávu</button>
+                    <button type="submit" class="btn" id="contactSubmitBtn" style="margin-top: 1rem;">Odeslat zprávu</button>
                 </div>
             </form>
         </div>
@@ -871,6 +872,49 @@
             requestAnimationFrame(animateParticles);
         }
         initParticles(); animateParticles();
+
+        /* --- Kontaktní formulář --- */
+        function submitContact(e) {
+            e.preventDefault();
+            var nameEl = document.getElementById('contactName');
+            var emailEl = document.getElementById('contactEmail');
+            var textEl = document.getElementById('contactText');
+            var statusEl = document.getElementById('contactStatus');
+            var btn = document.getElementById('contactSubmitBtn');
+
+            btn.disabled = true;
+            statusEl.style.color = 'var(--text-dim)';
+            statusEl.textContent = 'Odesílám...';
+
+            fetch('/api/messages', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: nameEl.value.trim(),
+                    email: emailEl.value.trim(),
+                    text: textEl.value.trim()
+                })
+            })
+            .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+            .then(function(result) {
+                btn.disabled = false;
+                if (result.ok) {
+                    statusEl.style.color = '#4a7c59';
+                    statusEl.textContent = '✓ Zpráva doputovala k tvůrcům. Děkujeme!';
+                    nameEl.value = '';
+                    emailEl.value = '';
+                    textEl.value = '';
+                } else {
+                    statusEl.style.color = '#8c3a3a';
+                    statusEl.textContent = result.data.error || 'Chyba při odesílání.';
+                }
+            })
+            .catch(function() {
+                btn.disabled = false;
+                statusEl.style.color = '#8c3a3a';
+                statusEl.textContent = 'Chyba připojení. Zkuste to znovu.';
+            });
+        }
 
         /* --- Orákulum (Server-Side Proxy) --- */
         var typeWriterTimeout;

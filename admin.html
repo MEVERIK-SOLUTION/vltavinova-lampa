@@ -345,6 +345,98 @@
             color: var(--hope-gold);
         }
 
+        /* --- MESSAGES --- */
+        .msg-card {
+            background: var(--bg-panel);
+            border: 1px solid #222;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .msg-card.unread {
+            border-left: 3px solid var(--hope-gold);
+        }
+
+        .msg-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .msg-name {
+            color: var(--hope-gold);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .msg-date {
+            color: var(--text-dark);
+            font-size: 0.75rem;
+        }
+
+        .msg-email {
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .msg-email a {
+            color: var(--text-dim);
+            text-decoration: none;
+        }
+
+        .msg-email a:hover {
+            color: var(--hope-gold);
+        }
+
+        .msg-text {
+            color: var(--text-main);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .msg-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .msg-actions button {
+            background: transparent;
+            border: 1px solid #333;
+            color: var(--text-dim);
+            padding: 0.3rem 0.8rem;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .msg-actions button:hover {
+            border-color: var(--error);
+            color: #c55;
+        }
+
+        .msg-empty {
+            text-align: center;
+            color: var(--text-dark);
+            padding: 3rem;
+            font-style: italic;
+        }
+
+        .msg-badge {
+            background: var(--hope-gold);
+            color: var(--bg-deep);
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
         @media (max-width: 768px) {
             .dash-header { flex-direction: column; gap: 1rem; text-align: center; }
             .section-panel { padding: 1.5rem; }
@@ -382,6 +474,7 @@
             <button onclick="showSection('sec-tvurci', this)">III. Tvůrci</button>
             <button onclick="showSection('sec-oracle', this)">Orákulum</button>
             <button onclick="showSection('sec-artefakt', this)">Artefakt</button>
+            <button onclick="showSection('sec-zpravy', this); loadMessages();">📬 Zprávy <span class="msg-badge" id="msgBadge" style="display:none;">0</span></button>
         </div>
 
         <!-- KV Notice (shown when KV is not configured) -->
@@ -583,6 +676,13 @@
                 <span class="save-status" id="status-oracle"></span>
                 <button class="btn-save" onclick="saveSection('oracle')">Uložit sekci</button>
             </div>
+        </div>
+
+        <!-- ZPRÁVY SECTION -->
+        <div class="section-panel" id="sec-zpravy">
+            <h2>📬 Zprávy od návštěvníků</h2>
+            <p style="color: var(--text-dim); margin-bottom: 2rem; font-size: 0.85rem;">Vzkazy z kontaktního formuláře — zájemci o koupi lampy</p>
+            <div id="msgList"><div class="msg-empty">Načítám zprávy...</div></div>
         </div>
 
         <!-- ARTEFAKT SECTION -->
@@ -797,6 +897,7 @@
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('dashboard').classList.add('active');
             loadContent();
+            loadMessageCount();
         }
 
         function doLogout() {
@@ -892,6 +993,100 @@
                 statusEl.textContent = 'Chyba připojení.';
                 statusEl.className = 'save-status error';
             });
+        }
+
+        // --- MESSAGES ---
+        function loadMessages() {
+            var token = sessionStorage.getItem(TOKEN_KEY);
+            if (!token) return;
+
+            var listEl = document.getElementById('msgList');
+            listEl.innerHTML = '<div class="msg-empty">Načítám zprávy...</div>';
+
+            fetch('/api/messages', {
+                method: 'GET',
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                var msgs = data.messages || [];
+                if (msgs.length === 0) {
+                    listEl.innerHTML = '<div class="msg-empty">Zatím žádné zprávy.</div>';
+                    return;
+                }
+                // Show newest first
+                msgs.reverse();
+                listEl.innerHTML = '';
+                msgs.forEach(function(msg) {
+                    var card = document.createElement('div');
+                    card.className = 'msg-card' + (!msg.read ? ' unread' : '');
+                    card.id = 'msg-' + msg.id;
+                    var dateStr = msg.date ? new Date(msg.date).toLocaleString('cs-CZ') : '';
+                    card.innerHTML = '<div class="msg-meta">' +
+                        '<span class="msg-name">' + escapeHtml(msg.name) + '</span>' +
+                        '<span class="msg-date">' + dateStr + '</span>' +
+                        '</div>' +
+                        '<div class="msg-email"><a href="mailto:' + escapeHtml(msg.email) + '">' + escapeHtml(msg.email) + '</a></div>' +
+                        '<div class="msg-text">' + escapeHtml(msg.text) + '</div>' +
+                        '<div class="msg-actions">' +
+                        '<button onclick="deleteMessage(\'' + msg.id + '\')">Smazat</button>' +
+                        '</div>';
+                    listEl.appendChild(card);
+                });
+            })
+            .catch(function() {
+                listEl.innerHTML = '<div class="msg-empty">Chyba při načítání zpráv.</div>';
+            });
+        }
+
+        function loadMessageCount() {
+            var token = sessionStorage.getItem(TOKEN_KEY);
+            if (!token) return;
+            fetch('/api/messages', {
+                method: 'GET',
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                var msgs = data.messages || [];
+                var unread = msgs.filter(function(m) { return !m.read; }).length;
+                var badge = document.getElementById('msgBadge');
+                if (unread > 0) {
+                    badge.textContent = unread;
+                    badge.style.display = 'inline';
+                } else {
+                    badge.style.display = 'none';
+                }
+            })
+            .catch(function() {});
+        }
+
+        function deleteMessage(id) {
+            var token = sessionStorage.getItem(TOKEN_KEY);
+            if (!token) return;
+
+            fetch('/api/messages', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({ id: id })
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.success) {
+                    var card = document.getElementById('msg-' + id);
+                    if (card) card.remove();
+                    loadMessageCount();
+                }
+            })
+            .catch(function() {});
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
         }
 
         // --- NAVIGATION ---
