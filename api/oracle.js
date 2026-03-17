@@ -52,6 +52,9 @@ module.exports = async function handler(req, res) {
         if (!response.ok) {
             var errText = await response.text();
             console.error('Gemini API error:', response.status, errText);
+            if (response.status === 429) {
+                return res.status(429).json({ error: 'Strážce potřebuje chvíli ticha. Zkuste to za minutu.' });
+            }
             return res.status(502).json({ error: 'Oracle nedokázal odpovědět.' });
         }
 
