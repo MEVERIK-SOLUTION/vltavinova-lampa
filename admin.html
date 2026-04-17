@@ -837,8 +837,16 @@
             }
         }
 
-        // --- AUTH ---
-        function doLogin() {
+        // --- AUTH (client-side for GitHub Pages) ---
+        var ADMIN_HASH = '7abf7b02e81c8fbf610658e300202458d071c8687356a88f2523e4d61fdc5fef';
+
+        async function sha256(str) {
+            var buf = new TextEncoder().encode(str);
+            var hash = await crypto.subtle.digest('SHA-256', buf);
+            return Array.from(new Uint8Array(hash)).map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+        }
+
+        async function doLogin() {
             var pwd = document.getElementById('passwordInput').value;
             var errEl = document.getElementById('loginError');
             var btn = document.getElementById('loginBtn');
@@ -852,45 +860,27 @@
             btn.textContent = 'Ověřuji...';
             errEl.textContent = '';
 
-            fetch('/api/auth', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ password: pwd })
-            })
-            .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
-            .then(function(result) {
-                btn.disabled = false;
-                btn.textContent = 'Přihlásit se';
-                if (!result.ok) {
-                    errEl.textContent = result.data.error || 'Přihlášení selhalo.';
-                    return;
+            try {
+                var inputHash = await sha256(pwd);
+                if (inputHash === ADMIN_HASH) {
+                    sessionStorage.setItem(TOKEN_KEY, 'authenticated');
+                    enterDashboard();
+                } else {
+                    errEl.textContent = 'Nesprávné heslo.';
                 }
-                sessionStorage.setItem(TOKEN_KEY, result.data.token);
-                enterDashboard();
-            })
-            .catch(function() {
-                btn.disabled = false;
-                btn.textContent = 'Přihlásit se';
-                errEl.textContent = 'Chyba připojení k serveru.';
-            });
+            } catch (e) {
+                errEl.textContent = 'Chyba ověření.';
+            }
+            btn.disabled = false;
+            btn.textContent = 'Přihlásit se';
         }
 
         function verifyAndEnter(token) {
-            fetch('/api/auth', {
-                method: 'GET',
-                headers: { 'Authorization': 'Bearer ' + token }
-            })
-            .then(function(r) { return r.json(); })
-            .then(function(data) {
-                if (data.valid) {
-                    enterDashboard();
-                } else {
-                    sessionStorage.removeItem(TOKEN_KEY);
-                }
-            })
-            .catch(function() {
+            if (token === 'authenticated') {
+                enterDashboard();
+            } else {
                 sessionStorage.removeItem(TOKEN_KEY);
-            });
+            }
         }
 
         function enterDashboard() {
