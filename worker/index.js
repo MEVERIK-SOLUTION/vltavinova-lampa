@@ -1,6 +1,5 @@
 var SYSTEM_PROMPT = "Jsi 'Vltavínový Strážce', prastarý duch dřeva vyvrženého vodou a vesmírného kamene, který spadl z hvězd. Jsi symbolem odolnosti, terapie, překonání vyhoření a nalezení identity. Uživatel ti svěří svou aktuální těžkou myšlenku nebo pocit zmaru. Poskytni metaforickou, poetickou odpověď (max 3 věty). Využívej metafory kořenů, vesmírného prachu, srážky pravdy a faktů a vnitřního jasu. Tón je klidný a dodávající hlubokou naději.";
 
-// Kurátorované poetické odpovědi — fallback když AI API není dostupné
 var FALLBACK_RESPONSES = [
     { keywords: ['únav', 'vyčerpán', 'vyhoření', 'vyhoř', 'burnout', 'nemůžu', 'nevládnu', 'síla'],
       texts: [
@@ -40,7 +39,6 @@ var FALLBACK_RESPONSES = [
       ]}
 ];
 
-// Obecné odpovědi pro témata, která nespadají do žádné kategorie
 var GENERIC_RESPONSES = [
     'Vltavín v sobě nese paměť pádu i letu. Tvé myšlenky jsou jako ten meteorit — zdánlivě padají, ale ve skutečnosti míří přesně tam, kde se zrodí něco nového.',
     'Naplavené dřevo neztratilo svůj příběh, když ho řeka vzala. Našlo v proudu svůj skutečný tvar. I ty jsi uprostřed svého tvarování.',
@@ -54,7 +52,6 @@ var GENERIC_RESPONSES = [
 
 function pickFallback(userText) {
     var lower = userText.toLowerCase();
-    // Hledej nejlepší tematickou shodu
     for (var i = 0; i < FALLBACK_RESPONSES.length; i++) {
         var category = FALLBACK_RESPONSES[i];
         for (var k = 0; k < category.keywords.length; k++) {
@@ -64,14 +61,11 @@ function pickFallback(userText) {
             }
         }
     }
-    // Žádná shoda → obecná odpověď
     return GENERIC_RESPONSES[Math.floor(Math.random() * GENERIC_RESPONSES.length)];
 }
 
-// --- GitHub Models AI funkce ---
-
-async function callGitHubModels(userText) {
-    var token = process.env.MODELS_PAT;
+async function callGitHubModels(userText, env) {
+    var token = env.MODELS_PAT;
     if (!token) return null;
 
     var response = await fetch('https://models.inference.ai.azure.com/chat/completions', {
@@ -100,48 +94,56 @@ async function callGitHubModels(userText) {
     return data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
 }
 
-module.exports = async function handler(req, res) {
-    // CORS headers
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+var corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Content-Type': 'application/json'
+};
 
-    if (req.method === 'OPTIONS') {
-        return res.status(200).end();
-    }
-
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed' });
-    }
-
-    var body;
-    try {
-        body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-    } catch (e) {
-        return res.status(400).json({ error: 'Invalid JSON' });
-    }
-
-    var userText = body && body.text;
-    if (!userText || typeof userText !== 'string' || userText.trim().length === 0) {
-        return res.status(400).json({ error: 'Text is required' });
-    }
-
-    if (userText.length > 2000) {
-        userText = userText.substring(0, 2000);
-    }
-    userText = userText.trim();
-
-    // GitHub Models → kurátorovaný fallback
-    try {
-        var aiResponse = await callGitHubModels(userText);
-        if (aiResponse) {
-            return res.status(200).json({ response: aiResponse });
+export default {
+    async fetch(request, env) {
+        if (request.method === 'OPTIONS') {
+            return new Response(null, { headers: corsHeaders });
         }
-    } catch (err) {
-        console.error('GitHub Models error:', err.message);
-    }
 
-    // Fallback: kurátorované poetické odpovědi
-    var fallback = pickFallback(userText);
-    return res.status(200).json({ response: fallback });
+        var url = new URL(request.url);
+        if (url.pathname !== '/api/oracle') {
+            return new Response(JSON.stringify({ error: 'Not found' }), { status: 404, headers: corsHeaders });
+        }
+
+        if (request.method !== 'POST') {
+            return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405, headers: corsHeaders });
+        }
+
+        var body;
+        try {
+            body = await request.json();
+        } catch (e) {
+            return new Response(JSON.stringify({ error: 'Invalid JSON' }), { status: 400, headers: corsHeaders });
+        }
+
+        var userText = body && body.text;
+        if (!userText || typeof userText !== 'string' || userText.trim().length === 0) {
+            return new Response(JSON.stringify({ error: 'Text is required' }), { status: 400, headers: corsHeaders });
+        }
+
+        if (userText.length > 2000) {
+            userText = userText.substring(0, 2000);
+        }
+        userText = userText.trim();
+
+        // GitHub Models → fallback
+        try {
+            var aiResponse = await callGitHubModels(userText, env);
+            if (aiResponse) {
+                return new Response(JSON.stringify({ response: aiResponse }), { headers: corsHeaders });
+            }
+        } catch (err) {
+            console.error('GitHub Models error:', err.message);
+        }
+
+        var fallback = pickFallback(userText);
+        return new Response(JSON.stringify({ response: fallback }), { headers: corsHeaders });
+    }
 };

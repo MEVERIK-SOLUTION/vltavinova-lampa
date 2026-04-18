@@ -945,7 +945,7 @@
             loadingEl.style.display = 'block';
             inputEl.value = '';
 
-            fetch('/api/oracle', {
+            fetch('https://vltavinova-oracle.matejkocanda.workers.dev/api/oracle', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ text: userThought })
